@@ -117,7 +117,7 @@ if $RUI; then
 			cp -f $TMPDIR/apk/RoundyUI32.apk $TMPDIR/system/vendor/overlay
 		fi
 	else
-		cp -f $TMPDIR/apk/RoundyUI5.apk $TMPDIR/system/vendor/overlay
+		cp -f $TMPDIR/apk/RoundyUI2.apk $TMPDIR/system/vendor/overlay
 	fi
 fi
 
