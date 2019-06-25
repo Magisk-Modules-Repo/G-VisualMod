@@ -12,8 +12,11 @@
 - Magisk 18.0 +
 - Tested on Android 9.0 (Pie), Android 8.x (Oreo) can try and report to me.
 - AOSP based rom, OEM Rom that is not based on AOSP (MIUI, ColorOS, etc) will not work!
+- MIUI PIE reported work!
 
 ## Changelog
+- v1.1
+Hotfixes and change SBH30 to 34
 - v1.0
 Initial Release
 
