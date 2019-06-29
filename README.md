@@ -31,10 +31,10 @@ Reports (Based on tester):
 - Rename the module zip depends on what you need:
 
   UI roundyness, rui[radius].zip
-  Radius: 2, 20, 32
+  - Radius: 2, 20, 32
 
   StatusBarMod, sbh[height].zip
-  Height: 34, 40, 48
+  - Height: 34, 40, 48
 
 Or...
 
@@ -57,11 +57,14 @@ Or...
 
 ## Changelog
 - v1.2
-Bug fixes and cleanoops.
+  - Bug fixes,
+  - Update tutorials,
+  - Cleanoops,
 - v1.1
-Hotfixes and change SBH30 to 34.
+  - Hotfixes,
+  - Change SBH30 to 34.
 - v1.0
-Initial Release.
+  - Initial Release.
 
 ## Credits
 - <a href="https://github.com/Zackptg5">Zackptg5</a> for Unity template.
