@@ -16,13 +16,13 @@ IFS=$OIFS
 
 ui_print " "
 if [ -z $RUI ] || [ -z $SBH ]; then
-  if [ -z $VKSEL ]; then
-    ui_print "  ! Some options not specified in zipname!"
-    ui_print "  Using defaults if not specified in zipname!"
-    [ -z $RUI ] && RUI=true; RUI20=true
-    [ -z $SBH ] && SBH=true; SBH34=true
-  else
-    if [ -z $RUI ] || [ -z $RUI20 ] || [ -z $RUI32 ]; then
+	if [ -z $VKSEL ]; then
+		ui_print "  ! Some options not specified in zipname!"
+		ui_print "  Using defaults if not specified in zipname!"
+		[ -z $RUI ] && RUI=true; RUI20=true
+		[ -z $SBH ] && SBH=true; SBH34=true
+	else
+		if [ -z $RUI ] || [ -z $RUI20 ] || [ -z $RUI32 ]; then
 			ui_print " "
 			ui_print " "
 			ui_print "   Install RoundyUI, RectangUI?"
@@ -31,11 +31,11 @@ if [ -z $RUI ] || [ -z $SBH ]; then
 			if $VKSEL; then
 				RUI=true
 			else
-  			    RUI=false
+  				RUI=false
 			fi
 		else
-      ui_print "   UI install method specified in zipname!"
-    fi
+			ui_print "   UI install method specified in zipname!"
+		fi
 		if $RUI && ([ -z $RUI20 ] || [ -z $RUI32 ]); then
 			ui_print " "
 			ui_print " "
@@ -44,12 +44,14 @@ if [ -z $RUI ] || [ -z $SBH ]; then
 			ui_print "   Vol+ = 20dp, Vol- = 32dp"
 			if $VKSEL; then
 				RUI20=true
+				RUI32=false
 			else
+				RUI20=false
 				RUI32=true
 			fi
 		else
-      ui_print "   UI install method specified in zipname!"
-    fi
+			ui_print "   UI install method specified in zipname!"
+		fi
 		if [ -z $SBH ] || [ -z $SBH34 ] || [ -z $SBH40 ] || [ -z $SBH48 ]; then
 			ui_print " "
 			ui_print " "
@@ -68,8 +70,8 @@ if [ -z $RUI ] || [ -z $SBH ]; then
 				ui_print "   Read above then pick height:"
 				ui_print " "
 				ui_print "   Vol+ = 34dp, Vol- = other sizes"
+				SBH=true
 				if $VKSEL; then
-					SBH=true
 					SBH34=true
 					SBH40=false
 					SBH48=false					
@@ -80,21 +82,21 @@ if [ -z $RUI ] || [ -z $SBH ]; then
 					ui_print " "
 					ui_print "   Vol+ = 40dp, Vol- = 48dp"
 					if $VKSEL; then
-						SBH=true
 						SBH34=false
 						SBH40=true
 						SBH48=false	
 					else
-						SBH=true
 						SBH34=false
 						SBH40=false
 						SBH48=true	
 					fi
 				fi
+			else
+				SBH=false
 			fi
 		else
-      ui_print "   Statusbar height install method specified in zipname!"
-    fi
+			ui_print "   Statusbar height install method specified in zipname!"
+		fi
 	fi
 else
   ui_print "   Options specified in zipname!"
