@@ -5,16 +5,26 @@
 </div>
 
 ## What's Inside?
-- RoundyUI, RectangUI
-- StatusBarHeight
-
+- UI Radius Mod
+  Change your UI radius.
+- StatusBar Height Mod
+  Change your StatusBar Height like having a notch.
+- NotchKiller
+  Override notch, always full screen.
+  
+  How to activate NotchKiller mod:
+  - Go to developer option
+  - Search Display Cutout
+  - Choose NotchKiller
+  - Done!
+  
 ## Compatibility
 - Magisk 18.0 +
 - Tested on Android 9.0 (Pie), Android 8.x (Oreo) can try and report to me.
 - AOSP based rom, OEM Rom that is not based on AOSP (e.g MIUI oreo) will not work!
 
 Reports (Based on tester):
-- MIUI Pie (Xiaomi) work!
+- MIUI Pie (Xiaomi) work! (SBH)
 - OxygenOS (OnePlus) work!
 - OneUI (Samsung) work!
 
@@ -30,11 +40,11 @@ Reports (Based on tester):
 ## How To Install (Alternatives)
 - Rename the module zip depends on what you need:
 
-  UI roundyness, rui[radius].zip
-  - Radius: 2, 20, 32
+  UI Radius Mod, urm[radius].zip
+  - Radius: r(RectangUI), m, l
 
-  StatusBarMod, sbh[height].zip
-  - Height: 34, 40, 48
+  StatusBar Mod, sbh[height].zip
+  - Height: m, l, xl
 
 Or...
 
@@ -48,14 +58,21 @@ Or...
 
 Or...
 
-- If you didn't and now stuck on bootloop:
+- If you stuck on bootloop:
   - Go to your recovery,
+  - Clear Cache and Dalvic
   - Go to file manager,
   - Go to /data/resource-cache,
   - Delete overlay.list;
   - Done.
+  - If still bootloop, just force restart by holding power button.
 
 ## Changelog
+- v1.4
+  - Cleanups,
+  - UI Radius Mod improvement on some dialogs,
+  - Fix UI Radius Mod force installation,
+  - Added NotchKiller, thx to <a href="https://github.com/zigafide">zigafide</a>.
 - v1.2
   - Bug fixes,
   - Update tutorials,
