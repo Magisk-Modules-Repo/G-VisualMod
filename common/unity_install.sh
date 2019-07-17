@@ -163,14 +163,17 @@ if $URM; then
 		ui_print "-  RoundyUI Medium Selected  -"
 		cp -f $TMPDIR/apk/URM_M.apk $TMPDIR/system/vendor/overlay
 		cp -f $TMPDIR/apk/URM_M2.apk $TMPDIR/system/vendor/overlay
+		cp -f $TMPDIR/apk/URM_M3.apk $TMPDIR/system/vendor/overlay
 	elif $URML; then
 		ui_print "-  RoundyUI Large Selected  -"
 		cp -f $TMPDIR/apk/URM_L.apk $TMPDIR/system/vendor/overlay
 		cp -f $TMPDIR/apk/URM_L2.apk $TMPDIR/system/vendor/overlay
+		cp -f $TMPDIR/apk/URM_L3.apk $TMPDIR/system/vendor/overlay
 	elif $URMR; then
     	ui_print "-  RectangUI Selected  -"
     	cp -f $TMPDIR/apk/URM_R.apk $TMPDIR/system/vendor/overlay
     	cp -f $TMPDIR/apk/URM_R2.apk $TMPDIR/system/vendor/overlay
+    	cp -f $TMPDIR/apk/URM_R3.apk $TMPDIR/system/vendor/overlay
     fi
 fi
 

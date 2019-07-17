@@ -67,6 +67,7 @@ REPLACE="
 print_modname() {
   ui_print "********************************"
   ui_print "          G-VISUAL MOD          "
+  ui_print "              v1.5                 "
   ui_print "********************************"
   ui_print "Brought to you by..............."
   ui_print "@Gnonymous7 as your lovely Tzuyu"

@@ -6,11 +6,11 @@
 
 ## What's Inside?
 - UI Radius Mod
-  Change your UI radius.
+  - Change your UI radius.
 - StatusBar Height Mod
-  Change your StatusBar Height like having a notch.
+  - Change your StatusBar Height like having a notch.
 - NotchKiller
-  Override notch, always full screen.
+  - Override notch, always full screen.
   
   How to activate NotchKiller mod:
   - Go to developer option
@@ -41,11 +41,14 @@ Reports (Based on tester):
 - Rename the module zip depends on what you need:
 
   UI Radius Mod, urm[radius].zip
-  - Radius: r(RectangUI), m, l
+  - Radius: r(RectangUI), m(Medium), l(Large)
 
   StatusBar Mod, sbh[height].zip
-  - Height: m, l, xl
+  - Height: m(Medium), l(Large), xl(eXtra Large)
 
+  NotchKiller, nk[opt].zip
+  - Options: y(Yes), n(No)
+  
 Or...
 
 - Manual Installation:
@@ -60,7 +63,7 @@ Or...
 
 - If you stuck on bootloop:
   - Go to your recovery,
-  - Clear Cache and Dalvic
+  - Clear Cache and Dalvik
   - Go to file manager,
   - Go to /data/resource-cache,
   - Delete overlay.list;
@@ -68,6 +71,10 @@ Or...
   - If still bootloop, just force restart by holding power button.
 
 ## Changelog
+- v1.5
+  - Fixed overlays not installing,
+  - Fixed notification dot bug,
+  - Vol button improvement.
 - v1.4
   - Cleanups,
   - UI Radius Mod improvement on some dialogs,
