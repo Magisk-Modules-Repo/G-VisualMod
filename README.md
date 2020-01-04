@@ -65,8 +65,8 @@ Or...
   - Go to your recovery,
   - Clear Cache and Dalvik
   - Go to file manager,
-  - Go to /data/resource-cache,
-  - Delete overlay.list;
+  - Remove folder /data/resource-cache
+  - reboot
   - Done.
   - If still bootloop, just force restart by holding power button.
 
