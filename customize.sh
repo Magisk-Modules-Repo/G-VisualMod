@@ -6,17 +6,16 @@
 ##########################################################################################
 
 ##########################################################################################
-# Unity Logic - Don't change/move this section
+# Unity Logic - Don't modify this
 ##########################################################################################
 
+SKIPUNZIP=1
 if [ -z $UF ]; then
-  UF=$TMPDIR/common/unityfiles
-  unzip -oq "$ZIPFILE" 'common/unityfiles/util_functions.sh' -d $TMPDIR >&2
+  MAGISK=true; UF=$TMPDIR/common/unityfiles
+  unzip -oq "$ZIPFILE" 'common/unityfiles/*' -d $TMPDIR >&2
   [ -f "$UF/util_functions.sh" ] || { ui_print "! Unable to extract zip file !"; exit 1; }
   . $UF/util_functions.sh
 fi
-
-comp_check
 
 ##########################################################################################
 # Config Flags
@@ -24,19 +23,11 @@ comp_check
 
 # Uncomment and change 'MINAPI' and 'MAXAPI' to the minimum and maximum android version for your mod
 # Uncomment DYNLIB if you want libs installed to vendor for oreo+ and system for anything older
-# Uncomment SYSOVER if you want the mod to always be installed to system (even on magisk) - note that this can still be set to true by the user by adding 'sysover' to the zipname
-# Uncomment DIRSEPOL if you want sepolicy patches applied to the boot img directly (not recommended) - THIS REQUIRES THE RAMDISK PATCHER ADDON (this addon requires minimum api of 17)
 # Uncomment DEBUG if you want full debug logs (saved to /sdcard in magisk manager and the zip directory in twrp) - note that this can still be set to true by the user by adding 'debug' to the zipname
 #MINAPI=21
 #MAXAPI=25
 #DYNLIB=true
-#SYSOVER=true
-#DIRSEPOL=true
 #DEBUG=true
-
-# Uncomment if you do *NOT* want Magisk to mount any files for you. Most modules would NOT want to set this flag to true
-# This is obviously irrelevant for system installs. This will be set to true automatically if your module has no files in system
-#SKIPMOUNT=true
 
 ##########################################################################################
 # Replace list
@@ -62,17 +53,14 @@ REPLACE="
 # Custom Logic
 ##########################################################################################
 
-# Set what you want to display when installing your module
-
 print_modname() {
   ui_print "********************************"
   ui_print "          G-VISUAL MOD          "
-  ui_print "              v1.5                 "
+  ui_print "              v2.0              "
   ui_print "********************************"
   ui_print "Brought to you by..............."
   ui_print "@Gnonymous7 as your lovely Tzuyu"
   ui_print " "
-  unity_main # Don't change this line
 }
 
 set_permissions() {
@@ -102,3 +90,9 @@ unity_custom() {
 }
 
 # Custom Functions for Install AND Uninstall - You can put them here
+
+##########################################################################################
+# Unity Logic - Don't touch anything after this
+##########################################################################################
+
+unity_main

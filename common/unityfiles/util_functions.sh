@@ -6,7 +6,7 @@
 # Magisk util_functions is still used and will override any listed here
 # They're present for system installs
 #
-##########################################################################################                   
+##########################################################################################
 
 ###################
 # Helper Functions
@@ -39,11 +39,7 @@ is_mounted() {
 }
 
 abort() {
-  ui_print "$1"
-  $MAGISK && ! imageless_magisk && is_mounted $MOUNTPATH && unmount_magisk_img
-  $BOOTMODE || recovery_cleanup
-  $DEBUG && debug_log
-  exit 1
+  cleanup -a "$1"
 }
 
 ######################
@@ -87,6 +83,7 @@ ensure_bb() {
 }
 
 recovery_actions() {
+  [ -d /system/apex ] && mount_apex
   # Make sure random don't get blocked
   mount -o bind /dev/urandom /dev/random
   # Unset library paths
@@ -102,64 +99,63 @@ recovery_actions() {
 }
 
 recovery_cleanup() {
-  [ -z $OLD_PATH ] || export PATH=$OLD_PATH
-  [ -z $OLD_LD_LIB ] || export LD_LIBRARY_PATH=$OLD_LD_LIB
-  [ -z $OLD_LD_PRE ] || export LD_PRELOAD=$OLD_LD_PRE
-  [ -z $OLD_LD_CFG ] || export LD_CONFIG_FILE=$OLD_LD_CFG
   ui_print "- Unmounting partitions"
   [ "$supersuimg" -o -d /su ] && umount /su 2>/dev/null
+  [ -d /system/apex ] && umount_apex
   umount -l /system_root 2>/dev/null
   umount -l /system 2>/dev/null
   umount -l /vendor 2>/dev/null
   umount -l /dev/random 2>/dev/null
+  [ -z $OLD_PATH ] || export PATH=$OLD_PATH
+  [ -z $OLD_LD_LIB ] || export LD_LIBRARY_PATH=$OLD_LD_LIB
+  [ -z $OLD_LD_PRE ] || export LD_PRELOAD=$OLD_LD_PRE
+  [ -z $OLD_LD_CFG ] || export LD_CONFIG_FILE=$OLD_LD_CFG
 }
 
 debug_log() {
+  $BOOTMODE && local LOG=/storage/emulated/0/$MODID-debug || local LOG=/data/media/0/$MODID-debug
   set +x
-  echo -e "***---Device Info---***" > /sdcard/$MODID-debug-tmp.log
-  echo -e "\n---Props---\n" >> /sdcard/$MODID-debug-tmp.log
-  getprop >> /sdcard/$MODID-debug-tmp.log
+  echo -e "***---Device Info---***" > $LOG-tmp.log
+  echo -e "\n---Props---\n" >> $LOG-tmp.log
+  getprop >> $LOG-tmp.log
   if $MAGISK; then
-    echo -e "\n\n***---Magisk Info---***" >> /sdcard/$MODID-debug-tmp.log
-    echo -e "\n---Magisk Version---\n\n$MAGISK_VER_CODE" >> /sdcard/$MODID-debug-tmp.log
-    imageless_magisk && { echo -e "\n---Installed Modules---\n" >> /sdcard/$MODID-debug-tmp.log;
-                                        ls $NVBASE/modules >> /sdcard/$MODID-debug-tmp.log; }
-    echo -e "\n---Last Magisk Log---\n" >> /sdcard/$MODID-debug-tmp.log
-    [ -d /cache ] && cat /cache/magisk.log >> /sdcard/$MODID-debug-tmp.log || cat /data/cache/magisk.log >> /sdcard/$MODID-debug-tmp.log
+    echo -e "\n\n***---Magisk Info---***" >> $LOG-tmp.log
+    echo -e "\n---Magisk Version---\n\n$MAGISK_VER_CODE" >> $LOG-tmp.log
+    echo -e "\n---Installed Modules---\n" >> $LOG-tmp.log
+    ls $NVBASE/modules >> $LOG-tmp.log
+    echo -e "\n---Last Magisk Log---\n" >> $LOG-tmp.log
+    [ -d /cache ] && cat /cache/magisk.log >> $LOG-tmp.log || cat /data/cache/magisk.log >> $LOG-tmp.log
   fi
-  echo -e "\n\n***---Unity Debug Info---***" >> /sdcard/$MODID-debug-tmp.log
-  echo -e "\n---Installed Files---\n" >> /sdcard/$MODID-debug-tmp.log
-  grep "^+* cp_ch" /sdcard/$MODID-debug.log | sed 's/.* //g' >> /sdcard/$MODID-debug-tmp.log
-  sed -i "\|$TMPDIR/|d" /sdcard/$MODID-debug-tmp.log
-  echo -e "\n---Installed Boot Scripts---\n" >> /sdcard/$MODID-debug-tmp.log
-  grep "^+* install_script" /sdcard/$MODID-debug.log | sed -e 's/.* //g' -e 's/^-.* //g' >> /sdcard/$MODID-debug-tmp.log
-  echo -e "\n---Installed Prop Files---\n" >> /sdcard/$MODID-debug-tmp.log
-  grep "^+* prop_process" /sdcard/$MODID-debug.log | sed 's/.* //g' >> /sdcard/$MODID-debug-tmp.log
-  echo -e "\n---Shell & Unity Variables---\n" >> /sdcard/$MODID-debug-tmp.log
-  (set) >> /sdcard/$MODID-debug-tmp.log
-  echo -e "\n---(Un)Install Log---\n" >> /sdcard/$MODID-debug-tmp.log
-  echo "$(cat /sdcard/$MODID-debug.log)" >> /sdcard/$MODID-debug-tmp.log
-  mv -f /sdcard/$MODID-debug-tmp.log /sdcard/$MODID-debug.log
+  echo -e "\n\n***---Unity Debug Info---***" >> $LOG-tmp.log
+  echo -e "\n---Installed Files---\n" >> $LOG-tmp.log
+  grep "^+* cp_ch" $LOG.log | sed 's/.* //g' >> $LOG-tmp.log
+  sed -i "\|$TMPDIR/|d" $LOG-tmp.log
+  echo -e "\n---Installed Boot Scripts---\n" >> $LOG-tmp.log
+  grep "^+* install_script" $LOG.log | sed -e 's/.* //g' -e 's/^-.* //g' >> $LOG-tmp.log
+  echo -e "\n---Installed Prop Files---\n" >> $LOG-tmp.log
+  grep "^+* prop_process" $LOG.log | sed 's/.* //g' >> $LOG-tmp.log
+  echo -e "\n---Shell & Unity Variables---\n" >> $LOG-tmp.log
+  (set) >> $LOG-tmp.log
+  echo -e "\n---(Un)Install Log---\n" >> $LOG-tmp.log
+  echo "$(cat $LOG.log)" >> $LOG-tmp.log
+  mv -f $LOG-tmp.log $LOG.log
 }
 
 cleanup() {
-  cd /
-  [ -d "$RD" ] && repack_ramdisk
-  if $MAGISK; then
-    imageless_magisk || unmount_magisk_img
+  [ "$1" == "-a" ] && local ERROR=true || local ERROR=false
+  $ERROR && { ui_print "$2"; rm -rf $MODPATH $TMPDIR 2>/dev/null; }
+  $BOOTMODE || recovery_cleanup
+  if ! $ERROR; then
+    $MAGISK && { rm -rf $MODPATH/common 2>/dev/null; rm -f $MODPATH/system/placeholder $MODPATH/customize.sh $MODPATH/README.md $MODPATH/.git* 2>/dev/null; }
     ui_print " "
     ui_print "    *******************************************"
-    ui_print "    *      Powered by Magisk (@topjohnwu)     *"
+    ui_print "    *    Unity by ahrion & zackptg5 @ XDA     *"
     ui_print "    *******************************************"
+    ui_print " "
   fi
-  $BOOTMODE || recovery_cleanup
-  ui_print " "
-  ui_print "    *******************************************"
-  ui_print "    *    Unity by ahrion & zackptg5 @ XDA     *"
-  ui_print "    *******************************************"
-  ui_print " "
   $DEBUG && debug_log
-  [ -d "$TMPDIR/addon/Aroma-Installer" ] && { rm -rf $TMPDIR; sleep 3; reboot recovery; } || { rm -rf $TMPDIR; exit 0; }
+  $ERROR && exit 1
+  [ -d "$MODPATH/common/addon/Aroma-Installer" ] && { rm -rf $TMPDIR; sleep 3; reboot recovery; } || { rm -rf $TMPDIR; exit 0; }
 }
 
 find_block() {
@@ -184,18 +180,30 @@ find_block() {
   return 1
 }
 
-mount_part() {
+# mount_name <partname> <mountpoint> <flag>
+mount_name() {
   local PART=$1
-  local POINT=/${PART}
+  local POINT=$2
+  local FLAG=$3
   [ -L $POINT ] && rm -f $POINT
-  mkdir $POINT 2>/dev/null
+  mkdir -p $POINT 2>/dev/null
   is_mounted $POINT && return
-  ui_print "- Mounting $PART"
-  mount -o rw $POINT 2>/dev/null
+  ui_print "- Mounting $POINT"
+  # First try mounting with fstab
+  mount $FLAG $POINT 2>/dev/null
   if ! is_mounted $POINT; then
-    local BLOCK=`find_block $PART$SLOT`
-    mount -o rw $BLOCK $POINT
+    local BLOCK=`find_block $PART`
+    mount $FLAG $BLOCK $POINT
   fi
+  is_mounted $POINT || abort "! Cannot mount $POINT"
+}
+
+mount_ro_ensure() {
+  # We handle ro partitions only in recovery if magisk
+  $BOOTMODE && return
+  local PART=$1$SLOT
+  local POINT=/$1
+  $MAGISK && mount_name $PART $POINT '-o ro' || mount_name $PART $POINT '-o rw'
   is_mounted $POINT || abort "! Cannot mount $POINT"
 }
 
@@ -208,7 +216,8 @@ mount_partitions() {
   fi
   [ -z $SLOT ] || ui_print "- Current boot slot: $SLOT"
 
-  mount_part system
+  # Mount ro partitions
+  mount_ro_ensure system
   if [ -f /system/init.rc ]; then
     SYSTEM_ROOT=true
     [ -L /system_root ] && rm -f /system_root
@@ -218,8 +227,20 @@ mount_partitions() {
   else
     grep -qE '/dev/root|/system_root' /proc/mounts && SYSTEM_ROOT=true || SYSTEM_ROOT=false
   fi
-  [ -L /system/vendor ] && mount_part vendor
+  [ -L /system/vendor ] && mount_ro_ensure vendor
   $SYSTEM_ROOT && ui_print "- Device is system-as-root"
+
+  # Persist partitions for module install in recovery
+  if $MAGISK && ! $BOOTMODE && [ ! -z $PERSISTDIR ]; then
+    # Try to mount persist
+    PERSISTDIR=/persist
+    mount_name persist /persist
+    if ! is_mounted /persist; then
+      # Fallback to cache
+      mount_name cache /cache
+      is_mounted /cache && PERSISTDIR=/cache || PERSISTDIR=
+    fi
+  fi
 }
 
 api_level_arch_detect() {
@@ -255,10 +276,64 @@ supersuimg_mount() {
   fi
 }
 
+mount_apex() {
+  [ -e /apex/* ] && return 0
+  # Mount apex files so dynamic linked stuff works
+  [ -L /apex ] && rm -f /apex
+  # Apex files present - needs to extract and mount the payload imgs
+  if [ -f "/system/apex/com.android.runtime.release.apex" ]; then
+    local j=0
+    [ -e /dev/block/loop1 ] && local minorx=$(ls -l /dev/block/loop1 | awk '{print $6}') || local minorx=1
+    for i in /system/apex/*.apex; do
+      local DEST="/apex/$(basename $i | sed 's/.apex$//')"
+      [ "$DEST" == "/apex/com.android.runtime.release" ] && DEST="/apex/com.android.runtime"
+      mkdir -p $DEST
+      unzip -qo $i apex_payload.img -d /apex
+      mv -f /apex/apex_payload.img $DEST.img
+      while [ $j -lt 100 ]; do
+        local loop=/dev/loop$j
+        mknod $loop b 7 $((j * minorx)) 2>/dev/null
+        losetup $loop $DEST.img 2>/dev/null
+        j=$((j + 1))
+        losetup $loop | grep -q $DEST.img && break
+      done;
+      uloop="$uloop $((j - 1))"
+      mount -t ext4 -o loop,noatime,ro $loop $DEST || return 1
+    done
+  # Already extracted payload imgs present, just mount the folders
+  elif [ -d "/system/apex/com.android.runtime.release" ]; then
+    for i in /system/apex/*; do
+      local DEST="/apex/$(basename $i)"
+      [ "$DEST" == "/apex/com.android.runtime.release" ] && DEST="/apex/com.android.runtime"
+      mkdir -p $DEST
+      mount -o bind,ro $i $DEST
+    done
+  fi
+  touch /apex/unity
+}
+
+umount_apex() {
+  [ -f /apex/unity -o -f /apex/magtmp ] || return 0
+  for i in /apex/*; do
+    umount -l $i 2>/dev/null
+  done
+  if [ -f "/system/apex/com.android.runtime.release.apex" ]; then
+    for i in $uloop; do
+      local loop=/dev/loop$i
+      losetup -d $loop 2>/dev/null || break
+    done
+  fi
+  rm -rf /apex
+}
+
 device_check() {
-  local PROP=$(echo "$1" | tr '[:upper:]' '[:lower:]')
-  for i in "ro.product.device" "ro.build.product"; do
-    [ "$(sed -n "s/^$i=//p" /system/build.prop 2>/dev/null | head -n 1 | tr '[:upper:]' '[:lower:]')" == "$PROP" -o "$(sed -n "s/^$i=//p" $VEN/build.prop 2>/dev/null | head -n 1 | tr '[:upper:]' '[:lower:]')" == "$PROP" ] && return 0
+  local PROP=$(echo "$1" | tr '[:upper:]' '[:lower:]') i
+  for i in /system_root /system $VEN /odm /product; do
+    if [ -f $i/build.prop ]; then
+      for j in "ro.product.device" "ro.build.product" "ro.product.vendor.device" "ro.vendor.product.device"; do
+        [ "$(sed -n "s/^$j=//p" $i/build.prop 2>/dev/null | head -n 1 | tr '[:upper:]' '[:lower:]')" == "$PROP" ] && return 0
+      done
+    fi
   done
   return 1
 }
@@ -277,45 +352,39 @@ api_check() {
 
 set_vars() {
   echo $PATH | grep -q "^$UF/tools/$ARCH32" || export PATH=$UF/tools/$ARCH32:$PATH
-  if $MAGISK; then
-    imageless_magisk && MOUNTEDROOT=$NVBASE/modules || MOUNTEDROOT=$MAGISKTMP/img
-    if $BOOTMODE; then
-      MOD_VER="$MOUNTEDROOT/$MODID/module.prop"
-      ORIGDIR="$MAGISKTMP/mirror"
-    else
-      MOD_VER="$MODPATH/module.prop"
-    fi
-    INFO="$MODPATH/$MODID-files"; PROP=$MODPATH/system.prop; UNITY="$MODPATH"
-    local ROOTTYPE="MagiskSU"
-  fi
-  if $SYSTEM_ROOT && [ ! -L /system/vendor ]; then
-    ORIGVEN=$ORIGDIR/system_root/system/vendor
-  else
-    ORIGVEN=$ORIGDIR/vendor
-  fi
-  SYS=/system; VEN=/system/vendor; RD=$UF/boot/ramdisk; INFORD="$RD/$MODID-files"; SHEBANG="#!/system/bin/sh"
+  SYS=/system; VEN=/system/vendor; SHEBANG="#!/system/bin/sh"
   [ $API -lt 26 ] && DYNLIB=false
-  $DYNLIB && { LIBPATCH="\/vendor"; LIBDIR=$VEN; } || { LIBPATCH="\/system"; LIBDIR=/system; }  
-  if ! $MAGISK || $SYSOVER; then
+  $DYNLIB && { LIBPATCH="\/vendor"; LIBDIR=$VEN; } || { LIBPATCH="\/system"; LIBDIR=/system; }
+  [ -z MAGISK ] && MAGISK=true
+  if $MAGISK; then
+    if $BOOTMODE; then
+      ORIGDIR="$MAGISKTMP/mirror"
+      if $SYSTEM_ROOT && [ ! -L /system/vendor ]; then
+        ORIGVEN=$ORIGDIR/system_root/system/vendor
+      else
+        ORIGVEN=$ORIGDIR/vendor
+      fi
+    fi
+    MOD_VER="$NVBASE/modules/$MODID/module.prop"; INFO="$NVBASE/modules/.core/$MODID-files"; PROP=$MODPATH/system.prop; UNITY="$MODPATH"
+    local ROOTTYPE="MagiskSU"
+  else
     UNITY=""
     [ -d /system/addon.d ] && INFO=/system/addon.d/$MODID-files || INFO=/system/etc/$MODID-files
-    [ -L /system/vendor ] && { VEN=/vendor; $BOOTMODE && ORIGVEN=$ORIGDIR/vendor; }
-    if ! $MAGISK; then
-      # Determine system boot script type
-      supersuimg_mount
-      MOD_VER="/system/etc/$MODID-module.prop"; NVBASE=/system/etc/init.d; ROOTTYPE="Rootless/other root"
-      if [ "$supersuimg" ] || [ -d /su ]; then
-        SHEBANG="#!/su/bin/sush"; ROOTTYPE="Systemless SuperSU"; NVBASE=/su/su.d
-      elif [ -e "$(find /data /cache -name supersu_is_here | head -n1)" ]; then
-        SHEBANG="#!/su/bin/sush"; ROOTTYPE="Systemless SuperSU"
-        NVBASE=$(dirname `find /data /cache -name supersu_is_here | head -n1` 2>/dev/null)/su.d
-      elif [ -d /system/su ] || [ -f /system/xbin/daemonsu ] || [ -f /system/xbin/sugote ]; then
-        NVBASE=/system/su.d; ROOTTYPE="System SuperSU"
-      elif [ -f /system/xbin/su ]; then
-        [ "$(grep "SuperSU" /system/xbin/su)" ] && { NVBASE=/system/su.d; ROOTTYPE="System SuperSU"; } || ROOTTYPE="LineageOS SU"
-      fi
-      PROP=$NVBASE/$MODID-props
+    [ -L /system/vendor ] && VEN=/vendor
+    # Determine system boot script type
+    supersuimg_mount
+    MOD_VER="/system/etc/$MODID-module.prop"; NVBASE=/system/etc/init.d; ROOTTYPE="Rootless/other root"
+    if [ "$supersuimg" ] || [ -d /su ]; then
+      SHEBANG="#!/su/bin/sush"; ROOTTYPE="Systemless SuperSU"; NVBASE=/su/su.d
+    elif [ -e "$(find /data /cache -name supersu_is_here | head -n1)" ]; then
+      SHEBANG="#!/su/bin/sush"; ROOTTYPE="Systemless SuperSU"
+      NVBASE=$(dirname `find /data /cache -name supersu_is_here | head -n1` 2>/dev/null)/su.d
+    elif [ -d /system/su ] || [ -f /system/xbin/daemonsu ] || [ -f /system/xbin/sugote ]; then
+      NVBASE=/system/su.d; ROOTTYPE="System SuperSU"
+    elif [ -f /system/xbin/su ]; then
+      [ "$(grep "SuperSU" /system/xbin/su)" ] && { NVBASE=/system/su.d; ROOTTYPE="System SuperSU"; } || ROOTTYPE="LineageOS SU"
     fi
+    PROP=$NVBASE/$MODID-props
   fi
   ui_print "- $ROOTTYPE detected"
 }
@@ -360,10 +429,10 @@ run_addons() {
       --) shift; break;;
     esac
   done
-  if [ "$(ls -A $TMPDIR/addon/*/$NAME.sh 2>/dev/null)" ]; then
+  if [ "$(ls -A $MODPATH/common/addon/*/$NAME.sh 2>/dev/null)" ]; then
     [ -z $PNAME ] || { ui_print " "; ui_print "- Running $PNAME Addons -"; }
-    for i in $TMPDIR/addon/*/$NAME.sh; do
-      ui_print "  Running $(echo $i | sed -r "s|$TMPDIR/addon/(.*)/$NAME.sh|\1|")..."
+    for i in $MODPATH/common/addon/*/$NAME.sh; do
+      ui_print "  Running $(echo $i | sed -r "s|$MODPATH/common/addon/(.*)/$NAME.sh|\1|")..."
       . $i
     done
     [ -z $PNAME ] || { ui_print " "; ui_print "- `echo $PNAME`ing (cont) -"; }
@@ -371,7 +440,7 @@ run_addons() {
 }
 
 cp_ch() {
-  local OPT=`getopt -o inr -- "$@"` BAK=true UBAK=true REST=true BAKFILE=$INFO FOL=false
+  local OPT=`getopt -o inr -- "$@"` BAK=true UBAK=true REST=true FOL=false
   eval set -- "$OPT"
   while true; do
     case "$1" in
@@ -382,11 +451,10 @@ cp_ch() {
     esac
   done
   local SRC="$1" DEST="$2" OFILES="$1"
-  $FOL && OFILES=$(find $SRC -type f 2>/dev/null)
+  $FOL && local OFILES=$(find $SRC -type f 2>/dev/null)
   [ -z $3 ] && PERM=0644 || PERM=$3
   case "$DEST" in
-    $RD/*) BAKFILE=$INFORD;;
-    $TMPDIR/*|/data/adb/*|$MODULEROOT/*|/sbin/.magisk/img/*) BAK=false;;
+    $TMPDIR/*|$MODULEROOT/*|$NVBASE/modules/$MODID/*) BAK=false;;
   esac
   for OFILE in ${OFILES}; do
     if $FOL; then
@@ -400,12 +468,12 @@ cp_ch() {
     fi
     if $BAK; then
       if $UBAK && $REST; then
-        [ ! "$(grep "$FILE$" $BAKFILE 2>/dev/null)" ] && echo "$FILE" >> $BAKFILE
-        [ -f "$FILE" -a ! -f "$FILE~" ] && { cp -af $FILE $FILE~; echo "$FILE~" >> $BAKFILE; }
+        [ ! "$(grep "$FILE$" $INFO 2>/dev/null)" ] && echo "$FILE" >> $INFO
+        [ -f "$FILE" -a ! -f "$FILE~" ] && { mv -f $FILE $FILE~; echo "$FILE~" >> $INFO; }
       elif ! $UBAK && $REST; then
-        [ ! "$(grep "$FILE$" $BAKFILE 2>/dev/null)" ] && echo "$FILE" >> $BAKFILE
+        [ ! "$(grep "$FILE$" $INFO 2>/dev/null)" ] && echo "$FILE" >> $INFO
       elif ! $UBAK && ! $REST; then
-        [ ! "$(grep "$FILE\NORESTORE$" $BAKFILE 2>/dev/null)" ] && echo "$FILE\NORESTORE" >> $BAKFILE
+        [ ! "$(grep "$FILE\NORESTORE$" $INFO 2>/dev/null)" ] && echo "$FILE\NORESTORE" >> $INFO
       fi
     fi
     install -D -m $PERM "$OFILE" "$FILE"
@@ -420,15 +488,11 @@ cp_ch() {
 
 patch_script() {
   [ -L /system/vendor ] && local VEN=/vendor
-  sed -i -e "1i $SHEBANG" -e "1i SYS=$ROOT/system" -e "1i VEN=$ROOT$VEN" $1
-  for i in "ROOT" "MAGISK" "LIBDIR" "SYSOVER" "DIRSEPOL" "MODID" "MOUNTEDROOT" "NVBASE"; do
+  sed -i -e "1i $SHEBANG" -e "1i SYS=/system" -e "1i VEN=$VEN" $1
+  local i; for i in "MAGISK" "LIBDIR" "MODID" "NVBASE" "INFO"; do
     sed -i "4i $i=$(eval echo \$$i)" $1
   done
-  if $MAGISK; then
-    sed -i -e "s|\$MODPATH|$MOUNTEDROOT/$MODID|g" -e "s|\$MOUNTPATH|$MOUNTEDROOT|g" -e "s|\$MODULEROOT|$MOUNTEDROOT|g" -e "12i INFO=$MOUNTEDROOT/$MODID/$MODID-files" $1
-  else
-    sed -i -e "s|\$MODPATH||g" -e "s|\$MOUNTPATH||g" -e "s|\$MODULEROOT||g" -e "12i INFO=$INFO" $1
-  fi
+  $MAGISK && sed -i -e "s|\$MODPATH|$NVBASE/modules/$MODID|g" $1 || sed -i -e "s|\$MODPATH||g" $1
 }
 
 install_script() {
@@ -440,8 +504,8 @@ install_script() {
   patch_script "$1"
   if $MAGISK; then
     case $(basename $1) in
-      post-fs-data.sh|service.sh) cp_ch -n $1 $MODULEROOT/$MODID/$(basename $1);;
-      *) cp_ch -n $1 $INPATH/$(basename $1) 0755;;
+      post-fs-data.sh|service.sh) cp_ch -i $1 $MODPATH/$(basename $1);;
+      *) cp_ch -i $1 $INPATH/$(basename $1) 0755;;
     esac
   else
     cp_ch -n $1 $NVBASE/$MODID-$(basename $1 | sed 's/.sh$//')$EXT 0700
@@ -462,64 +526,15 @@ prop_process() {
   $MAGISK || chmod 0700 $PROP
 }
 
-uninstall_files() {
-  local FILE
-  if [ -z "$1" ] || [ "$1" == "$INFO" ]; then
-    FILE=$INFO
-    $BOOTMODE && [ -f $MODULEROOT/$MODID/$MODID-files ] && FILE=$MODULEROOT/$MODID/$MODID-files
-    $MAGISK || [ -f $FILE ] || abort "   ! Mod not detected !"
-  else
-    FILE="$1"
-  fi
-  if [ -f $FILE ]; then
-    while read LINE; do
-      if [ "$(echo -n $LINE | tail -c 1)" == "~" ] || [ "$(echo -n $LINE | tail -c 9)" == "NORESTORE" ]; then
-        continue
-      elif [ -f "$LINE~" ]; then
-        mv -f $LINE~ $LINE
-      else
-        rm -f $LINE
-        while true; do
-          LINE=$(dirname $LINE)
-          [ "$(ls -A $LINE 2>/dev/null)" ] && break 1 || rm -rf $LINE
-        done
-      fi
-    done < $FILE
-    rm -f $FILE
-  fi
-}
-
-center_and_print() {
-  ui_print " "
-  local NEW CHARS SPACES
-  ui_print "    *******************************************"
-  for i in name version author; do
-    NEW=$(grep_prop $i $TMPDIR/module.prop)
-    [ "$i" == "author" ] && NEW="by ${NEW}"
-    CHARS=$((${#NEW}-$(echo "$NEW" | tr -cd "©®™" | wc -m)))
-    SPACES=""
-    if [ $CHARS -le 41 ]; then
-      for j in $(seq $(((41-$CHARS) / 2))); do
-        SPACES="${SPACES} "
-      done
-    fi
-    if [ $(((41-$CHARS) % 2)) -eq 1 ]; then 
-      ui_print "    *$SPACES$NEW${SPACES} *"
-    else
-      ui_print "    *$SPACES$NEW$SPACES*"
-    fi
-    [ "$i" == "name" ] && ui_print "    *******************************************"
-  done
-  ui_print "    *******************************************"
-  ui_print " "
-}
-
 #######
-# main
+# Main
 #######
 
 unity_install() {
   ui_print "- Installing"
+
+  # Remove remnants
+  $MAGISK && [ -f $INFO ] && remove_files $INFO
 
   # Preinstall Addons
   run_addons -h
@@ -529,111 +544,77 @@ unity_install() {
   mktouch $INFO
 
   # Run user install script
-  [ -f "$TMPDIR/common/unity_install.sh" ] && . $TMPDIR/common/unity_install.sh
-  
+  [ -f "$MODPATH/common/unity_install.sh" ] && . $MODPATH/common/unity_install.sh
+
   # Install Addons
   run_addons -i
-  
-  # Check sizes in case compression was used anywhere in zip
-  if $MAGISK && ! $SYSOVER; then
-    if ! imageless_magisk; then
-      request_size_check "$TMPDIR/system"
-      check_filesystem $IMG $MODULEROOT
-      if [ $reqSizeM -gt $curFreeM ]; then
-        newSizeM=$(((curSizeM + reqSizeM - curFreeM) / 32 * 32 + 64))
-        ui_print "   Resizing $IMG to ${newSizeM}M"
-        $MAGISKBIN/magisk imgtool umount $MODULEROOT $MAGISKLOOP
-        $MAGISKBIN/magisk imgtool resize $IMG $newSizeM >&2
-        mount_snippet
-      fi
-    fi
-  fi
-  
-  # Remove comments from files
-  for i in $TMPDIR/common/sepolicy.sh $TMPDIR/common/system.prop $TMPDIR/common/service.sh $TMPDIR/common/post-fs-data.sh; do
-    [ -f $i ] && sed -i -e "/^#/d" -e "/^ *$/d" $i
-  done
-  
-  # Sepolicy
-  $DIRSEPOL && [ ! -d $TMPDIR/addon/Ramdisk-Patcher ] && { ui_print "   ! Ramdisk-Patcher required but not found!"; ui_print "   ! It's required for direct sepolicy patching"; ui_print "   ! Will use boot script instead"; DIRSEPOL=false; }
-  
-  if ! $DIRSEPOL && [ -s $TMPDIR/common/sepolicy.sh ]; then
-    [ "$NVBASE" == "/system/etc/init.d" -o "$MAGISK" == "true" ] && echo -n "magiskpolicy --live" >> $TMPDIR/common/service.sh || echo -n "supolicy --live" >> $TMPDIR/common/service.sh
-    sed -i -e '/^#.*/d' -e '/^$/d' $TMPDIR/common/sepolicy.sh
-    while read LINE; do
-      case $LINE in
-        \"*\") echo -n " $LINE" >> $TMPDIR/common/service.sh;;
-        \"*) echo -n " $LINE\"" >> $TMPDIR/common/service.sh;;
-        *\") echo -n " \"$LINE" >> $TMPDIR/common/service.sh;;
-        *) echo -n " \"$LINE\"" >> $TMPDIR/common/service.sh;;
-      esac
-    done < $TMPDIR/common/sepolicy.sh
-  fi
 
-  ui_print "   Installing scripts and files for $ARCH SDK $API device..."
-  
-  # Custom uninstaller
-  $MAGISK && [ -f $TMPDIR/uninstall.sh ] && install_script $TMPDIR/uninstall.sh $MODPATH/uninstall.sh
+  ui_print "   Installing for $ARCH SDK $API device..."
+
+  # Remove comments from files and place them, add blank line to end if not already present
+  for i in $MODPATH/common/system.prop $MODPATH/common/service.sh $MODPATH/common/post-fs-data.sh $MODPATH/common/sepolicy.rule; do
+    [ -f $i ] && { sed -i -e "/^#/d" -e "/^ *$/d" $i; [ "$(tail -1 $i)" ] && echo "" >> $i; } || continue
+    case $(basename $i) in
+      "service.sh") install_script -l $i;;
+      "post-fs-data.sh") install_script -p $i;;
+      "system.prop") prop_process $i; $MAGISK || echo $PROP >> $INFO;;
+    esac
+  done
+  sed -i "s/<MODID>/$MODID/" $MODPATH/uninstall.sh
 
   # Handle replace folders
   for TARGET in $REPLACE; do
-    if $MAGISK; then mktouch $MODPATH$TARGET/.replace; else rm -rf $TARGET; fi
+    $MAGISK && mktouch $MODPATH$TARGET/.replace || rm -rf $TARGET
   done
 
-  # Prop files
-  [ -s $TMPDIR/common/system.prop ] && { prop_process $TMPDIR/common/system.prop; $MAGISK || echo $PROP >> $INFO; }
+  # Sepolicy
+  if $MAGISK && [ -f $MODPATH/common/sepolicy.rule -a -e $PERSISTDIR ]; then
+    ui_print "- Installing custom sepolicy patch"
+    PERSISTMOD=$PERSISTDIR/magisk/$MODID
+    mkdir -p $PERSISTMOD
+    cp -af $MODPATH/common/sepolicy.rule $PERSISTMOD/sepolicy.rule
+  elif [ -s $MODPATH/common/sepolicy.rule ]; then
+    # TO DO: No more live sepolicy patching for rootless - Patch boot img directly?
+    [ "$NVBASE" == "/system/etc/init.d" ] && echo -n "magiskpolicy --live" >> $MODPATH/common/service.sh || echo -n "supolicy --live" >> $MODPATH/common/service.sh
+    while read LINE; do
+      case $LINE in
+        \"*\") echo -n " $LINE" >> $MODPATH/common/service.sh;;
+        \"*) echo -n " $LINE\"" >> $MODPATH/common/service.sh;;
+        *\") echo -n " \"$LINE" >> $MODPATH/common/service.sh;;
+        *) echo -n " \"$LINE\"" >> $MODPATH/common/service.sh;;
+      esac
+    done < $MODPATH/common/sepolicy.rule
+  fi
 
-  #Install post-fs-data mode scripts
-  [ -s $TMPDIR/common/post-fs-data.sh ] && install_script -p $TMPDIR/common/post-fs-data.sh
-
-  # Service mode scripts
-  [ -s $TMPDIR/common/service.sh ] && install_script -l $TMPDIR/common/service.sh
-  
   # Install files
-  $IS64BIT || rm -rf $TMPDIR/system/lib64 $TMPDIR/system/vendor/lib64
-  [ -d "/system/priv-app" ] || mv -f $TMPDIR/system/priv-app $TMPDIR/system/app 
-  [ -d "/system/xbin" ] || mv -f $TMPDIR/system/xbin $TMPDIR/system/bin
+  $IS64BIT || rm -rf $MODPATH/system/lib64 $MODPATH/system/vendor/lib64
+  [ -d "/system/priv-app" ] || mv -f $MODPATH/system/priv-app $MODPATH/system/app 2>/dev/null
+  [ -d "/system/xbin" ] || mv -f $MODPATH/system/xbin $MODPATH/system/bin 2>/dev/null
   if $DYNLIB; then
-    for FILE in $(find $TMPDIR/system/lib*/* -maxdepth 0 -type d 2>/dev/null | sed -e "s|$TMPDIR/system/lib.*/modules||" -e "s|$TMPDIR/system/||"); do
-      mkdir -p $(dirname $TMPDIR/system/vendor/$FILE)
-      mv -f $TMPDIR/system/$FILE $TMPDIR/system/vendor/$FILE
+    for FILE in $(find $MODPATH/system/lib*/* -maxdepth 0 -type d 2>/dev/null | sed -e "s|$MODPATH/system/lib.*/modules||" -e "s|$MODPATH/system/||"); do
+      mkdir -p $(dirname $MODPATH/system/vendor/$FILE)
+      mv -f $MODPATH/system/$FILE $MODPATH/system/vendor/$FILE
     done
   fi
-  rm -f $TMPDIR/system/placeholder
-  cp_ch -r $TMPDIR/system $UNITY/system
-  # Install rom backup script
-  if [ "$INFO" == "/system/addon.d/$MODID-files" ]; then
-    ui_print "   Installing addon.d backup script..."
-    sed -i "s/MODID=.*/MODID=$MODID/" $TMPDIR/common/unityfiles/addon.sh
-    cp_ch -n $TMPDIR/common/unityfiles/addon.sh $UNITY/system/addon.d/98-$MODID-unity.sh 0755
-  fi
-  
-  # Install scripts and module info
-  cp_ch -n $TMPDIR/module.prop $MOD_VER
-  if $MAGISK; then
-    # Auto mount
-    if [ -d $MODPATH/system ] && ! $SYSOVER; then
-      if imageless_magisk; then
-        if $SKIPMOUNT || [ ! -d $MODPATH/system ]; then touch $MODPATH/skip_mount; fi
-      else
-        $SKIPMOUNT || touch $MODPATH/auto_mount
-      fi
-    elif [ ! -d $MODPATH/system ] && $SYSOVER; then
-      imageless_magisk && $SKIPMOUNT && touch $MODPATH/skip_mount
+  if ! $MAGISK; then
+    cp_ch -r $MODPATH/system /system
+    cp_ch -n $TMPDIR/module.prop $MOD_VER
+    # Install rom backup script
+    if [ "$INFO" == "/system/addon.d/$MODID-files" ]; then
+      ui_print "   Installing addon.d backup script..."
+      sed -i "s/MODID=.*/MODID=$MODID/" $UF/addon.sh
+      cp_ch -n $UF/addon.sh /system/addon.d/98-$MODID-unity.sh 0755
     fi
-    cp -af $TMPDIR/module.prop $MODPATH/module.prop
-    # Update info for magisk manager
-    $BOOTMODE && { rm -f $MOUNTEDROOT/$MODID/remove; mktouch $MOUNTEDROOT/$MODID/update; cp_ch -n $TMPDIR/module.prop $MOUNTEDROOT/$MODID/module.prop; }
-  elif [ "$NVBASE" == "/system/etc/init.d" ] && [ "$(ls -A $NVBASE/$MODID* 2>/dev/null)" ]; then
+  fi
+
+  # Update info for magisk manager
+  $MAGISK && $BOOTMODE && { rm -f $NVBASE/modules/$MODID/remove; mktouch $NVBASE/modules/$MODID/update; cp_ch -n $MODPATH/module.prop $NVBASE/modules/$MODID/module.prop; }
+  
+  if [ "$NVBASE" == "/system/etc/init.d" ] && [ "$(ls -A $MODPATH/common/*.sh 2>/dev/null)" ]; then
     ui_print " "
     ui_print "   ! This root method has no boot script support !"
     ui_print "   ! You will need to add init.d support !"
   fi
-
-  # Add blank line to end of all prop/script files if not already present
-  for FILE in $MODPATH/*.sh $MODPATH/*.prop; do
-    [ -f $FILE ] && { [ "$(tail -1 $FILE)" ] && echo "" >> $FILE; }
-  done
 
   # Remove info file if not needed
   [ -s $INFO ] || rm -f $INFO
@@ -645,130 +626,123 @@ unity_install() {
   set_permissions
 }
 
+remove_files() {
+  while read LINE; do
+    if [ "$(echo -n $LINE | tail -c 1)" == "~" ] || [ "$(echo -n $LINE | tail -c 9)" == "NORESTORE" ]; then
+      continue
+    elif [ -f "$LINE~" ]; then
+      mv -f $LINE~ $LINE
+    else
+      rm -f $LINE
+      while true; do
+        LINE=$(dirname $LINE)
+        [ "$(ls -A $LINE 2>/dev/null)" ] && break 1 || rm -rf $LINE
+      done
+    fi
+  done < $1
+  rm -f $1
+}
+
 unity_uninstall() {
   ui_print " "
   ui_print "- Uninstalling"
-  
+
   # Uninstall Addons
   run_addons -u
 
   # Remove files
-  uninstall_files
-
-  if $MAGISK; then
-    rm -rf $MODPATH
-    if $BOOTMODE; then
-      [ -d $MOUNTEDROOT/$MODID/system ] && touch $MOUNTEDROOT/$MODID/remove || rm -rf $MOUNTEDROOT/$MODID
-    fi
+  if [ -f $INFO ]; then
+    remove_files $INFO
+  elif ! $MAGISK; then
+    abort "   ! Mod not detected !"
   fi
 
   # Run user install script
-  [ -f "$TMPDIR/common/unity_uninstall.sh" ] && . $TMPDIR/common/unity_uninstall.sh
+  [ -f "$MODPATH/common/unity_uninstall.sh" ] && . $MODPATH/common/unity_uninstall.sh
   
+  if $MAGISK; then
+    rm -rf $NVBASE/modules_update/$MODID 2>/dev/null
+    $BOOTMODE && { [ -d $NVBASE/modules/$MODID ] && touch $NVBASE/modules/$MODID/remove; } || rm -rf $MODPATH
+  fi
+
   # Postuninstall Addons
   run_addons -v
-
-  ui_print " "
-  ui_print "- Completing uninstall -"
 }
 
 unity_upgrade() {
-  if [ "$1" == "-s" ]; then
-    mount -o rw,remount /system
-    [ -L /system/vendor ] && mount -o rw,remount /vendor
-    [ -d /system/addon.d ] && INFO=/system/addon.d/$MODID-files || INFO=/system/etc/$MODID-files
-  fi
-  [ -f "$TMPDIR/common/unity_upgrade.sh" ] && . $TMPDIR/common/unity_upgrade.sh
+  [ -f "$MODPATH/common/unity_upgrade.sh" ] && . $MODPATH/common/unity_upgrade.sh
   unity_uninstall
-  [ "$1" == "-s" ] && { INFO="$MODPATH/$MODID-files"; ui_print "  ! Running upgrade..."; }
+  mkdir -p $MODPATH
+  unzip -o "$ZIPFILE" -x 'META-INF/*' 'common/unityfiles/*' -d $MODPATH >&2
   unity_install
 }
 
-comp_check() {
-  # Check for min & max api version
-  if [ "$API" ]; then
-    [ "$MINAPI" ] && api_check -n $MINAPI
-    [ "$MAXAPI" ] && api_check -x $MAXAPI
-  fi
-  
-  if [ -z $MAGISKBIN ]; then
-    MAGISK=false
-  else
-    MAGISK=true
-    [ $MAGISK_VER_CODE -lt 18000 ] && require_new_magisk
-    $SYSOVER && $BOOTMODE && { ui_print "   ! Magisk manager isn't supported!"; abort "   ! Install in recovery !"; }
-    $SYSOVER && { mount -o rw,remount /system; [ -L /system/vendor ] && mount -o rw,remount /vendor; }
-  fi
-}
-
 unity_main() {
-  # Set variables
-  set_vars
-
-  # Add blank line to end of all files if needbe
-  for i in $(find $TMPDIR -type f -name "*.sh" -o -name "*.prop"); do
-    [ "$(tail -1 "$i")" ] && echo "" >> "$i"
-  done
-
   #Debug
   if $DEBUG; then
     ui_print " "
     ui_print "- Debug mode"
-    ui_print "  Debug log will be written to: /sdcard/$MODID-debug.log"
-    exec 2>/sdcard/$MODID-debug.log
+    if $BOOTMODE; then
+      ui_print "  Debug log will be written to: /storage/emulated/0/$MODID-debug.log"
+      exec 2>/storage/emulated/0/$MODID-debug.log
+    else
+      ui_print "  Debug log will be written to: /data/media/0/$MODID-debug.log"
+      exec 2>/data/media/0/$MODID-debug.log
+    fi
     set -x
   fi
 
+  $MAGISK && ! $BOOTMODE && [ -d /system/apex ] && mount_apex
+
+  # Check for min/max api version
+  if [ "$API" ]; then
+    [ "$MINAPI" ] && api_check -n $MINAPI
+    [ "$MAXAPI" ] && api_check -x $MAXAPI
+  fi
+
+  # Extract files - done this way so we can mount apex before chcon is called from set_perm
+  ui_print "- Extracting module files"
+  unzip -o "$ZIPFILE" -x 'META-INF/*' 'common/unityfiles/*' -d $MODPATH >&2
+
+  # Set variables
+  set_vars
+
+  # Add blank line to end of all files if needbe
+  for i in $(find $MODPATH -type f -name "*.sh" -o -name "*.prop"); do
+    [ "$(tail -1 "$i")" ] && echo "" >> "$i"
+  done
+
   # Main addons
-  [ -f "$TMPDIR/addon.tar.xz" ] && tar -xf $TMPDIR/addon.tar.xz -C $TMPDIR 2>/dev/null
+  [ -f "$MODPATH/common/addon.tar.xz" ] && tar -xf $MODPATH/common/addon.tar.xz -C $MODPATH/common 2>/dev/null
   run_addons -m
-  
+
   # Load user vars/function
   unity_custom
-  
+
   # Determine mod installation status
   ui_print " "
-  if $MAGISK && ! $SYSOVER && [ -f "/system/addon.d/$MODID-files" -o -f "/system/etc/$MODID-files" ]; then
-    ui_print "  ! Previous system override install detected!"
-    ui_print "  ! Removing...!"
-    $BOOTMODE && { ui_print "  ! Magisk manager isn't supported!"; abort "   ! Flash in TWRP !"; }
-    unity_upgrade -s
-  elif [ -f "$MOD_VER" ]; then
-    if [ -d "$RD" ] && [ ! "$(grep "#$MODID-UnityIndicator" $RD/init.rc 2>/dev/null)" ]; then
-      ui_print "  ! Mod present in system but not in ramdisk!"
-      ui_print "  ! Running upgrade..."
-      unity_upgrade
-    elif [ $(grep_prop versionCode $MOD_VER) -ge $(grep_prop versionCode $TMPDIR/module.prop) ]; then
-      ui_print "  ! Current or newer version detected!"
-      unity_uninstall
-    else
-      ui_print "  ! Older version detected! Upgrading..."
-      unity_upgrade
-    fi
-  else
-    unity_install
-  fi
+  [ -z $INSTATUS ] && INSTATUS=0
+  case $INSTATUS in
+    0) unity_install;;
+    1) unity_uninstall;;
+    2) ui_print "Older version detected! Upgrading!"; unity_upgrade;;
+  esac
 
   # Complete (un)install
   cleanup
 }
-
-SKIPMOUNT=false; SYSOVER=false; DEBUG=false; DYNLIB=false; SEPOLICY=false; DIRSEPOL=false
-OIFS=$IFS; IFS=\|; 
-case $(echo $(basename "$ZIPFILE") | tr '[:upper:]' '[:lower:]') in
-  *debug*) DEBUG=true;;
-  *sysover*) SYSOVER=true;;
-esac
-IFS=$OIFS
 
 # Detect whether in boot mode
 [ -z $BOOTMODE ] && BOOTMODE=false
 $BOOTMODE || ps | grep zygote | grep -qv grep && BOOTMODE=true
 $BOOTMODE || ps -A 2>/dev/null | grep zygote | grep -qv grep && BOOTMODE=true
 
-# Unzip files
-ui_print " "
-ui_print "Unzipping files..."
-unzip -oq "$ZIPFILE" -d $TMPDIR 2>/dev/null
-chmod -R 755 $UF/tools
+DEBUG=false; DYNLIB=false
+OIFS=$IFS; IFS=\|;
+case "$ZIPFILE" in
+  *debug*) DEBUG=true;;
+esac
+IFS=$OIFS
+
 [ "$(grep_prop id $TMPDIR/module.prop)" == "UnityTemplate" ] && { ui_print "! Unity Template is not a separate module !"; abort "! This template is for devs only !"; }
+chmod -R 755 $UF/tools

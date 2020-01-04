@@ -1,10 +1,4 @@
-if $SYSOVER || $DIRSEPOL; then
-  rm -f $INFO; mount -o rw,remount /system
-  [ -L /system/vendor ] && mount -o rw,remount /vendor
-fi
-
-FILE=$INFO
-[ -f $MODPATH/$MODID-files ] && FILE=$MODPATH/$MODID-files
+FILE=/data/adb/modules/.core/<MODID>-files
 if [ -f $FILE ]; then
   while read LINE; do
     if [ "$(echo -n $LINE | tail -c 1)" == "~" ] || [ "$(echo -n $LINE | tail -c 9)" == "NORESTORE" ]; then
@@ -19,9 +13,4 @@ if [ -f $FILE ]; then
       done
     fi
   done < $FILE
-fi
-
-if $SYSOVER || $DIRSEPOL; then
-  rm -f $INFO; mount -o ro,remount /system
-  [ -L /system/vendor ] && mount -o ro,remount /vendor
 fi
