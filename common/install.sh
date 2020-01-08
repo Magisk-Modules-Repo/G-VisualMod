@@ -77,7 +77,7 @@ c_urm() {
 			if $VKSEL; then
 				ui_print " "
 				ui_print " "
-				ui_print "   Pick radius"
+				ui_print "   Pick radius for UI"
 				ui_print " "
 				ui_print "   Vol+ = Medium, Vol- = Large"
 				URMR=false
@@ -89,6 +89,18 @@ c_urm() {
 			else
 				URMR=true
 			fi
+			if $VKSEL; then
+				ui_print " "
+				ui_print " "
+				ui_print "   Pick radius for Vol.bar"
+				ui_print " "
+				ui_print "   Vol+ = Medium, Vol- = Large"
+				URMR=false
+				if $VKSEL; then
+					URMVM=true
+				else
+					URMVL=true
+				fi
 		else
 			URM=false
 		fi
@@ -227,8 +239,8 @@ ui_print "-  Preparing  -"
 ui_print " "
 ui_print " "
 
-OVRINST=$VEN/overlay
-if [ -d $OVRINST ]; then
+OVRFLDR=$VEN/overlay
+if [ -d $OVRFLDR ]; then
 	ui_print " "
 	ui_print " "
 	ui_print "	Overlay folder located!"
@@ -240,7 +252,7 @@ else
 	ui_print "	Overlay folder missing, creating..."
 	ui_print " "
 	ui_print " "
-	mkdir $VEN/overlay
+	mkdir -p $OVRFLDR
 fi
 
 ui_print " "
@@ -249,50 +261,76 @@ ui_print "-  Installing  -"
 ui_print " "
 ui_print " "
 
-if $URM; then
-	ui_print "-  UI Radius Mod Selected  -"
-	aapt p -f -v -M ${OVERLAYDIR}/AndroidManifest.xml \
-                -I /system/framework/framework-res.apk -S ${OVERLAYDIR}/overlay/ \
-                -F ${MODDIR}/unsigned.apk &>$MODDIR/logs/aapt.log
 
+
+# Preparing
+mkdir -p $MODPATH/mod/RD
+RD=$MODPATH/mod/RD
+URMDIR=$MODPATH/mod/GVM-URM
+SBHDIR=$MODPATH/mod/GVM-SBH
+NKDIR=$MODPATH/mod/GVM-NK
+WGDIR=$MODPATH/mod/GVM-WG
+OVRPATH=$MODPATH/system/vendor/overlay/
+
+
+# Copying Files
 if $URM; then
 	ui_print "-  UI Radius Mod Selected  -"
+	mkdir -p $RD/GVM-URM
 	if $URMM; then
 		ui_print "-  RoundyUI Medium Selected  -"
-		cp -f $TMPDIR/apk/URM_M.apk $TMPDIR/system/vendor/overlay
-		cp -f $TMPDIR/apk/URM_M2.apk $TMPDIR/system/vendor/overlay
-		cp -f $TMPDIR/apk/URM_M3.apk $TMPDIR/system/vendor/overlay
+		cp -f $URMDIR/GVM-URM_M.apk $RD/GVM-URM
+		cp -f $URMDIR/GVM-URM_M2.apk $RD/GVM-URM
 	elif $URML; then
 		ui_print "-  RoundyUI Large Selected  -"
-		cp -f $TMPDIR/apk/URM_L.apk $TMPDIR/system/vendor/overlay
-		cp -f $TMPDIR/apk/URM_L2.apk $TMPDIR/system/vendor/overlay
-		cp -f $TMPDIR/apk/URM_L3.apk $TMPDIR/system/vendor/overlay
+		cp -f $URMDIR/GVM-URM_L.apk $RD/GVM-URM
+		cp -f $URMDIR/GVM-URM_L2.apk $RD/GVM-URM
 	elif $URMR; then
-    	ui_print "-  RectangUI Selected  -"
-    	cp -f $TMPDIR/apk/URM_R.apk $TMPDIR/system/vendor/overlay
-    	cp -f $TMPDIR/apk/URM_R2.apk $TMPDIR/system/vendor/overlay
-    	cp -f $TMPDIR/apk/URM_R3.apk $TMPDIR/system/vendor/overlay
-    fi
+		ui_print "-  RectangUI Selected  -"
+		cp -f $URMDIR/GVM-URM_R.apk $RD/GVM-URM
+		cp -f $URMDIR/GVM-URM_R2.apk $RD/GVM-URM
+		cp -f $URMDIR/GVM-URM_R3.apk $RD/GVM-URM
+	fi
+	if $URMVM; then
+		ui_print "-  RoundyUI Medium Vol Selected  -"
+		cp -f $URMDIR/GVM-URM_M3.apk $RD/GVM-URM
+	elif $URMVL; then
+		ui_print "-  RoundyUI Large Vol Selected  -"
+		cp -f $URMDIR/GVM-URM_L3.apk $RD/GVM-URM
+	fi
 fi
-
 
 if $SBH; then
 	ui_print "-  StatusBar Height Selected  -"
+	mkdir -p $RD/GVM-SBH
 	if $SBHM; then
 		ui_print "-  StatusBar Height Medium Selected  -"
-		cp -f $TMPDIR/apk/SBH_M.apk $TMPDIR/system/vendor/overlay
+		cp -f $SBHDIR/GVM-SBH_M.apk $RD/GVM-SBH
 	elif $SBHL; then
 		ui_print "-  StatusBar Height Large Selected  -"
-		cp -f $TMPDIR/apk/SBH_L.apk $TMPDIR/system/vendor/overlay
+		cp -f $SBHDIR/GVM-SBH_L.apk $RD/GVM-SBH
 	elif $SBHXL; then
 		ui_print "-  StatusBar Height eXtra Large Selected  -"
-		cp -f $TMPDIR/apk/SBH_XL.apk $TMPDIR/system/vendor/overlay
+		cp -f $SBHDIR/GVM-SBH_XL.apk $RD/GVM-SBH
 	fi
 fi
 
 if $NK; then
 	ui_print "-  NotchKiller Selected  -"
-	cp -r -f $TMPDIR/apk/DisplayCutoutEmulationZigafide $TMPDIR/system/vendor/overlay
+	cp -r -f $NKDIR $RD
+fi
+
+if $WG; then
+	ui_print "-  NotchKiller Selected  -"
+	cp -r -f $WGDIR $RD
+fi
+
+# Finalizing
+
+cp -r -f $RD/. $OVRPATH
+ui_print "  Completing Installation...."
+
+if $NK; then
    	ui_print " "
    	ui_print "   PLEASE READ."
   	ui_print " "
