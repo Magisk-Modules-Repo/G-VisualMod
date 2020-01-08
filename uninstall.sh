@@ -1,7 +1,6 @@
-FILE=/data/adb/modules/.core/<MODID>-files
 if [ -f $FILE ]; then
   while read LINE; do
-    if [ "$(echo -n $LINE | tail -c 1)" == "~" ] || [ "$(echo -n $LINE | tail -c 9)" == "NORESTORE" ]; then
+    if [ "$(echo -n $LINE | tail -c 1)" == "~" ]; then
       continue
     elif [ -f "$LINE~" ]; then
       mv -f $LINE~ $LINE
@@ -13,4 +12,5 @@ if [ -f $FILE ]; then
       done
     fi
   done < $FILE
+  rm -f $FILE $(dirname $FILE)/.$MODID-module.prop
 fi
