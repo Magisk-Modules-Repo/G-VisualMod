@@ -1,47 +1,3 @@
-# MIUI Exception
-if [ -f $VEN/build.prop ]; then
-	BUILDS="/system/build.prop $VEN/build.prop";
-else
-	BUILDS="/system/build.prop";
-fi
-MIUI=$(grep "ro.miui.ui.version.*" $BUILDS)
-if [ $MIUI ]; then
-	ui_print " "
-	ui_print " "
-	ui_print " MIUI Detected"
-	ui_print " Only SBH supported"
-	ui_print " "
-	ui_print " "
-else
-	MIUI=
-fi
-
-# Zipname Simplifier
-zo_urm() {
-	case $(echo $(basename $ZIPFILE) | tr '[:upper:]' '[:lower:]') in
-		*urmm*) URM=true; URMR=false; URMM=true; URML=false;;
-		*urml*) URM=true; URMR=false; URMM=false; URML=true;;
-		*urmr*) URM=true; URMR=true; URMM=false; URML=false;;
-	esac
-}
-zo_sbh() {
-	case $(echo $(basename $ZIPFILE) | tr '[:upper:]' '[:lower:]') in
-		*sbhm*) SBH=true; SBHM=true; SBHL=false; SBHXL=false;;
-		*sbhl*) SBH=true; SBHM=false; SBHL=true; SBHXL=false;;
-		*sbhxl*) SBH=true; SBHM=false; SBHL=false; SBHXL=true;;
-	esac
-}
-zo_nk() {
-	case $(echo $(basename $ZIPFILE) | tr '[:upper:]' '[:lower:]') in
-		*nky*) NK=true;;
-	esac
-}
-zo_wg() {
-	case $(echo $(basename $ZIPFILE) | tr '[:upper:]' '[:lower:]') in
-		*wgy*) WG=true;;
-	esac
-}
-
 # Zipname Initiate
 if [ $MIUI ]; then
 	OIFS=$IFS; IFS=\|
@@ -52,156 +8,11 @@ else
 	zo_urm
 	zo_sbh
 	zo_nk
-	zo_wg
+	zo_pg
 	IFS=$OIFS
 fi
 
-# Chooser Simplifier
-c_urm() {
-	if [ -z $URM ] || [ -z $URMM ] || [ -z $URML ]; then
-     	ui_print "   ----- UI Radius Mod ------"
-		ui_print " "
-		ui_print "   Change your UI radius."
-		ui_print " "
-		ui_print " "
-		ui_print "   Install UI Radius Mod?"
-		ui_print " "
-		ui_print "   Vol+ = Yes, Vol- = No"
-		if $VKSEL; then
-			ui_print " "
-			ui_print " "
-			ui_print "   Install RoundyUI or RectangUI?"
-			ui_print " "
-			ui_print "   Vol+ = RoundyUI, Vol- = RectangUI"
-			URM=true
-			if $VKSEL; then
-				ui_print " "
-				ui_print " "
-				ui_print "   Pick radius for UI"
-				ui_print " "
-				ui_print "   Vol+ = Medium, Vol- = Large"
-				URMR=false
-				if $VKSEL; then
-					URMM=true
-				else
-					URML=true
-				fi
-			else
-				URMR=true
-			fi
-			if $VKSEL; then
-				ui_print " "
-				ui_print " "
-				ui_print "   Pick radius for Vol.bar"
-				ui_print " "
-				ui_print "   Vol+ = Medium, Vol- = Large"
-				URMR=false
-				if $VKSEL; then
-					URMVM=true
-				else
-					URMVL=true
-				fi
-		else
-			URM=false
-		fi
-	else
-		ui_print "   UI Radius Mod install method specified in zipname!"
-	fi
-}
-c_sbh() {
-	if [ -z $SBH ] || [ -z $SBHM ] || [ -z $SBHL ] || [ -z $SBHXL ]; then
-    	ui_print " "
-		ui_print " "
-       	ui_print "   ------ StatusBar Height Mod ------"
-		ui_print " "
-		ui_print "   Change your StatusBar Height like having a notch."
-		ui_print " "
-		ui_print " "
-		ui_print "   Install StatusBar Height Mod?"
-		ui_print " "
-		ui_print "   Vol+ = Yes, Vol- = No"
-		if $VKSEL; then
-			ui_print " "
-			ui_print " "
-			ui_print "   Size list:"
-			ui_print " - Medium (Comfort looking)"
-			ui_print " - Large (Match your lockscreen statusbar)"
-			ui_print " - eXtra Large (Same height as your navbar)"
-			ui_print " "
-			ui_print " "
-			ui_print "   Read above then pick height:"
-			ui_print " "
-			ui_print "   Vol+ = Medium, Vol- = Other sizes"
-			SBH=true
-			if $VKSEL; then
-				SBHM=true				
-			else
-			    ui_print " "
-			    ui_print " "
-				ui_print "   Pick remaining height:"
-				ui_print " "
-				ui_print "   Vol+ = Large, Vol- = eXtra Large"
-				if $VKSEL; then
-					SBHL=true
-				else
-					SBHXL=true	
-				fi
-			fi
-		else
-			SBH=false
-		fi
-	else
-     	ui_print "   StatusBar Height Mod install method specified in zipname!"
-	fi
-}
-c_nk() {
-	if [ -z $NK ]; then
-    	ui_print " "
-		ui_print " "
-  		ui_print "   ----- NotchKiller -----"
-   		ui_print " "
-    	ui_print "   Override notch, always full screen."
- 	    ui_print " "
-    	ui_print " "
-   		ui_print "   Install NotchKiller?"
-    	ui_print " "
-    	ui_print "   Vol+ = Yes, Vol- = No"
-       	if $VKSEL; then
-       		NK=true
-       	else
-       	    NK=false
-       	fi
-    else
-        ui_print "   NotchKiller install method specified in zipname!"
-	fi
-}
-c_wg() {
-	if [ $API -lt "29" ]; then
-	    WG=false
-	else
-		if [ -z $WG ]; then
-			ui_print " "
-			ui_print " "
-			ui_print "   ----- Wide Gesture -----"
-			ui_print " "
-			ui_print "   Resize home gesture like an Iphone"
-			ui_print " "
-			ui_print " "
-			ui_print "   Install Wide Gesture?"
-			ui_print " "
-			ui_print "   Vol+ = Yes, Vol- = No"
-			if $VKSEL; then
-				WG=true
-			else
-				WG=false
-			fi
-		else
-			ui_print "   Wide Gesture install method specified in zipname!"
-		fi
-	fi
-}
-
-# Chooser
+# Mod Chooser
 if [ $MIUI ]; then
 	if [ -z $SBH ] ; then
 		if [ -z $VKSEL ]; then
@@ -215,23 +26,24 @@ if [ $MIUI ]; then
 	  ui_print "   Options specified in zipname!"
 	fi
 else
-	if [ -z $URM ] || [ -z $SBH ] || [ -z $NK ] || [ -z $WG ]; then
+	if [ -z $URM ] || [ -z $SBH ] || [ -z $NK ] || [ -z $PG ]; then
 		if [ -z $VKSEL ]; then
 			ui_print "  ! Some options not specified in zipname!"
 			ui_print "  Using defaults if not specified in zipname!"
 			[ -z $URM ] && URM=true; URMM=true
 			[ -z $SBH ] && SBH=true; SBHM=true
 			[ -z $NK ] && NK=false
-			[ -z $WG ] && WG=True
+			[ -z $PG ] && PG=True; PGIOS=true
 		else
 			c_urm
 			c_sbh
 			c_nk
-			c_wg
+			c_pg
 		fi
 	else
 	  ui_print "   Options specified in zipname!"
 	fi
+fi
 
 ui_print " "
 ui_print " "
@@ -239,96 +51,181 @@ ui_print "-  Preparing  -"
 ui_print " "
 ui_print " "
 
-OVRFLDR=$VEN/overlay
-if [ -d $OVRFLDR ]; then
-	ui_print " "
-	ui_print " "
-	ui_print "	Overlay folder located!"
-	ui_print " "
-	ui_print " "
-else
-	ui_print " "
-	ui_print " "
-	ui_print "	Overlay folder missing, creating..."
-	ui_print " "
-	ui_print " "
-	mkdir -p $OVRFLDR
-fi
+# Functions to check if dirs is mounted
+is_mounted() {
+	grep " `readlink -f $1` " /proc/mounts 2>/dev/null
+	return $?
+}
 
-ui_print " "
-ui_print " "
-ui_print "-  Installing  -"
-ui_print " "
-ui_print " "
+is_mounted_rw() {
+	grep " `readlink -f $1` " /proc/mounts | grep " rw," 2>/dev/null
+	return $?
+}
+
+mount_rw() {
+	mount -o remount,rw $1
+	DID_MOUNT_RW=$1
+}
+
+unmount_rw() {
+	if [ "x$DID_MOUNT_RW" = "x$1" ]; then
+		mount -o remount,ro $1
+	fi
+}
+
+unmount_rw_stepdir(){
+  if [ "$MOUNTPRODUCT" ]; then
+    is_mounted_rw " /product" || unmount_rw /product
+  elif [ "$OEM" ];then
+    is_mounted_rw " /oem" && unmount_rw /oem
+    is_mounted_rw " /oem/OP" && unmount_rw /oem/OP
+  fi
+}
+
+setvars(){
+	SUFFIX="/overlay/GVM"
+	if [ -d "/product/overlay" ]; then
+		PRODUCT=true
+		# Yay, magisk supports bind mounting /product now
+		MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
+		if [ $MAGISK_VER_CODE -ge "20000" ]; then
+			MOUNTPRODUCT=
+			STEPDIR=$MODPATH/system/product$SUFFIX
+		else
+			if [ $(resetprop ro.build.version.sdk) -ge 29 ]; then
+				echo "\nMagisk v20 is required for users on Android 10"
+				echo "Please update Magisk and try again."
+				exit 1
+			fi
+			MOUNTPRODUCT=true
+			STEPDIR=/product$SUFFIX
+			is_mounted " /product" || mount /product
+			is_mounted_rw " /product" || mount_rw /product
+		fi
+	elif [ -d /oem/OP ];then
+		OEM=true
+		is_mounted " /oem" || mount /oem
+		is_mounted_rw " /oem" || mount_rw /oem
+		is_mounted " /oem/OP" || mount /oem/OP
+		is_mounted_rw " /oem/OP" || mount_rw /oem/OP
+		STEPDIR=/oem/OP/OPEN_US/overlay/framework
+	else
+		PRODUCT=; OEM=; MOUNTPRODUCT=
+		STEPDIR=$MODPATH/system/vendor$SUFFIX
+	fi
+	if [ "$MOUNTPRODUCT" ]; then
+		is_mounted " /product" || mount /product
+		is_mounted_rw " /product" || mount_rw /product
+	elif [ "$OEM" ];then
+		is_mounted " /oem" || mount /oem
+		is_mounted_rw " /oem" || mount_rw /oem
+		is_mounted " /oem/OP" || mount /oem/OP
+		is_mounted_rw " /oem/OP" || mount_rw /oem/OP
+	fi
+}
+
+# Path-to-install locator
+while [ ! -d "$STEPDIR" ]; do
+    setvars
+    mkdir -p $STEPDIR
+done
+
+OVPATH=${STEPDIR::-4}
+echo "The overlay will be copied to $OVPATH..."
 
 
-
-# Preparing
-mkdir -p $MODPATH/mod/RD
-RD=$MODPATH/mod/RD
+# Mods Aliasing
 URMDIR=$MODPATH/mod/GVM-URM
 SBHDIR=$MODPATH/mod/GVM-SBH
 NKDIR=$MODPATH/mod/GVM-NK
-WGDIR=$MODPATH/mod/GVM-WG
-OVRPATH=$MODPATH/system/vendor/overlay/
+PGDIR=$MODPATH/mod/GVM-PG
 
+ui_print " "
+ui_print " "
+ui_print "-  Copying files  -"
+ui_print " "
+ui_print " "
 
 # Copying Files
 if $URM; then
 	ui_print "-  UI Radius Mod Selected  -"
-	mkdir -p $RD/GVM-URM
-	if $URMM; then
+	mkdir -p $STEPDIR/GVM-URM-1
+	mkdir -p $STEPDIR/GVM-URM-2
+	mkdir -p $STEPDIR/GVM-URM-3
+	if [ $URMM = true ] ; then
 		ui_print "-  RoundyUI Medium Selected  -"
-		cp -f $URMDIR/GVM-URM_M.apk $RD/GVM-URM
-		cp -f $URMDIR/GVM-URM_M2.apk $RD/GVM-URM
-	elif $URML; then
+		cp -f $URMDIR/GVM-URM_M.apk $STEPDIR/GVM-URM-1
+		cp -f $URMDIR/GVM-URM_M2.apk $STEPDIR/GVM-URM-2
+	elif [ $URML = true ] ; then
 		ui_print "-  RoundyUI Large Selected  -"
-		cp -f $URMDIR/GVM-URM_L.apk $RD/GVM-URM
-		cp -f $URMDIR/GVM-URM_L2.apk $RD/GVM-URM
-	elif $URMR; then
+		cp -f $URMDIR/GVM-URM_L.apk $STEPDIR/GVM-URM-1
+		cp -f $URMDIR/GVM-URM_L2.apk $STEPDIR/GVM-URM-2
+	elif [ $URMR = true ] ; then
 		ui_print "-  RectangUI Selected  -"
-		cp -f $URMDIR/GVM-URM_R.apk $RD/GVM-URM
-		cp -f $URMDIR/GVM-URM_R2.apk $RD/GVM-URM
-		cp -f $URMDIR/GVM-URM_R3.apk $RD/GVM-URM
+		cp -f $URMDIR/GVM-URM_R.apk $STEPDIR/GVM-URM-1
+		cp -f $URMDIR/GVM-URM_R2.apk $STEPDIR/GVM-URM-2
+		cp -f $URMDIR/GVM-URM_R3.apk $STEPDIR/GVM-URM-3
 	fi
-	if $URMVM; then
+	if [ $URMVM = true ] ; then
 		ui_print "-  RoundyUI Medium Vol Selected  -"
-		cp -f $URMDIR/GVM-URM_M3.apk $RD/GVM-URM
-	elif $URMVL; then
+		cp -f $URMDIR/GVM-URM_M3.apk $STEPDIR/GVM-URM-3
+	elif [ $URMVL = true ] ; then
 		ui_print "-  RoundyUI Large Vol Selected  -"
-		cp -f $URMDIR/GVM-URM_L3.apk $RD/GVM-URM
+		cp -f $URMDIR/GVM-URM_L3.apk $STEPDIR/GVM-URM-3
 	fi
 fi
 
 if $SBH; then
 	ui_print "-  StatusBar Height Selected  -"
-	mkdir -p $RD/GVM-SBH
-	if $SBHM; then
+	mkdir -p $STEPDIR/GVM-SBH
+	if [ $SBHM = true ] ; then
 		ui_print "-  StatusBar Height Medium Selected  -"
-		cp -f $SBHDIR/GVM-SBH_M.apk $RD/GVM-SBH
-	elif $SBHL; then
+		cp -f $SBHDIR/GVM-SBH_M.apk $STEPDIR/GVM-SBH
+	elif [ $SBHL = true ] ; then
 		ui_print "-  StatusBar Height Large Selected  -"
-		cp -f $SBHDIR/GVM-SBH_L.apk $RD/GVM-SBH
-	elif $SBHXL; then
+		cp -f $SBHDIR/GVM-SBH_L.apk $STEPDIR/GVM-SBH
+	elif [ $SBHXL = true ] ; then
 		ui_print "-  StatusBar Height eXtra Large Selected  -"
-		cp -f $SBHDIR/GVM-SBH_XL.apk $RD/GVM-SBH
+		cp -f $SBHDIR/GVM-SBH_XL.apk $STEPDIR/GVM-SBH
 	fi
 fi
 
 if $NK; then
 	ui_print "-  NotchKiller Selected  -"
-	cp -r -f $NKDIR $RD
+	mkdir -p $STEPDIR/GVM-NK
+	cp -r -f $NKDIR/GVM-NK.apk $STEPDIR/GVM-NK
 fi
 
-if $WG; then
-	ui_print "-  NotchKiller Selected  -"
-	cp -r -f $WGDIR $RD
+if $PG; then
+	ui_print "-  Wide Gesture Selected  -"
+	mkdir -p $STEPDIR/GVM-PG
+	if [ $PGIOS = true ]; then
+		cp -r -f $PGDIR/GVM-PG.apk $STEPDIR/GVM-PG
+		cp -r -f $PGDIR/Nav* $STEPDIR
+	elif [ $PGTH = true ] ; then
+		cp -r -f $PGDIR/GVM-PG-TH.apk $STEPDIR/GVM-PG
+	fi
 fi
 
-# Finalizing
+if [ -z "$(ls -A $STEPDIR)" ] ; then
+	echo "The overlays was not copied, please send logs to the developer."
+	exit 1
+else
+	:
+fi
 
-cp -r -f $RD/. $OVRPATH
-ui_print "  Completing Installation...."
+if [ "$API" == 29 ]; then
+	mv $STEPDIR/* $OVPATH
+	rm -rf $STEPDIR
+else
+	find $STEPDIR -type f -name '*.apk' -exec mv -t $OVPATH {} +
+	rm -rf $STEPDIR
+fi
+
+
+rm -rf $MODPATH/mod
+
+unmount_rw_stepdir
 
 if $NK; then
    	ui_print " "
@@ -342,6 +239,8 @@ if $NK; then
     ui_print " "
   	ui_print " "
   	ui_print "  Press any vol button to complete installation."
+	ui_print " "
+	ui_print " "
   	if $VKSEL; then
       	ui_print "  Completing Installation...."
     else

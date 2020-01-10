@@ -8,13 +8,13 @@
 
 ## What's Inside?
 - UI Radius Mod
-  - Change your UI radius.
+  - Change your UI's corner radius.
 - StatusBar Height Mod
-  - Change your StatusBar Height like having a notch.
-- NotchKiller
-  - Override notch, always full screen.
-- Wide Gesture (Only Android 10 supported!)
-  - Widen your Android 10 gesture.
+  - Make your statusbar taller (Notched display).
+- NotchKiller mod
+  - Override notch, always full screen in all appps.
+- 10's Pill Gesture Mod (Only Android 10 supported!)
+  - Widen your Android 10's pill gesture.
   
   How to activate NotchKiller mod:
   - Go to developer option,
@@ -25,7 +25,7 @@
 ## Compatibility
 - Magisk 18.0 +
 - Android 9.0 (Pie) and higher.
-- Android 10 (Q) only for Wide Gesture mod.
+- Android 10 (Q) only for 10's Pill Gesture mod.
 - AOSP Based rom (e.g. OxygenOS).
 - MIUI Pie (Only StatusBar Mod supported!).
 
@@ -54,7 +54,7 @@ Reports (Based on tester):
   NotchKiller, nk[opt].zip</code>
   - Options: <code>y(Yes), n(No)</code>
   
-  Wide Gesture, wg[opt].zip</code>
+  10's Pill Gesture, pg[opt].zip</code>
   - Options: <code>y(Yes), n(No)</code>
 
 ## How To Uninstall (PLEASE READ TO AVOID BOOTLOOP CHANCES)
@@ -72,9 +72,9 @@ Or...
 
 ## Changelog
 - v2.0
-  - Added Wide Gesture thx to Tetuko,
-  - Add support for rom that has no overlay on its vendor,
-  - Brand new template thx to <a href="https://github.com/Zackptg5">Zackptg5</a>.
+  - Added 10's Pill Gesture mod (IOS adjusted),
+  - Added support for Android 10,
+  - Brand new MMT-EX template thx to <a href="https://github.com/Zackptg5">Zackptg5</a>.
 - v1.5
   - Fixed overlays not installing,
   - Fixed notification dot bug,
@@ -95,8 +95,8 @@ Or...
   - Initial Release.
 
 ## Credits
-- <a href="https://github.com/Zackptg5">Zackptg5</a> for Unity template.
-- <a href="https://github.com/JohnFawkes">JohnFawkes</a> for helping me.
+- <a href="https://github.com/Zackptg5">Zackptg5</a> for MMT-EX template.
+- <a href="https://github.com/JohnFawkes">JohnFawkes</a> and <a href="https://github.com/skittles9823">Skittles9823</a> for helping me.
 - <a href="https://github.com/topjohnwu">topjohnwu</a> for entire Magisk universe.
 - Me for first time using linux and doing this all coding stuff lol.
 - Telegram friends.
