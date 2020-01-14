@@ -197,7 +197,7 @@ if $NK; then
 fi
 
 if $PG; then
-	ui_print "-  Wide Gesture Selected  -"
+	ui_print "-  10's Pill Gesture Selected  -"
 	mkdir -p $STEPDIR/GVM-PG
 	if [ $PGIOS = true ]; then
 		cp -r -f $PGDIR/GVM-PG.apk $STEPDIR/GVM-PG
@@ -218,7 +218,7 @@ if [ "$API" == 29 ]; then
 	mv $STEPDIR/* $OVPATH
 	rm -rf $STEPDIR
 else
-	find $STEPDIR -type f -name '*.apk' -exec mv -t $OVPATH {} +
+	find $STEPDIR -type f -name '*.apk' -exec mv {} $OVPATH \;
 	rm -rf $STEPDIR
 fi
 

@@ -1,7 +1,7 @@
 <h1 align="center">G-Visual Mod</h1>
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Version-v2.0-green.svg?longCache=true&style=popout-round"
+  <img src="https://img.shields.io/badge/Version-v2.0.1-green.svg?longCache=true&style=popout-round"
   alt="Version" />
   <strong>Various visual mods for Android.</strong>
 </div>
@@ -71,6 +71,8 @@ Or...
   - If still bootloop, just force restart by holding power button.
 
 ## Changelog
+- v2.0.1
+  - Pie rom fixed.
 - v2.0
   - Added 10's Pill Gesture mod (IOS adjusted),
   - Added support for Android 10,

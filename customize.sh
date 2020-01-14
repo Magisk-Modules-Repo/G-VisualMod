@@ -14,7 +14,7 @@
 MINAPI=28
 #MAXAPI=25
 #DYNLIB=true
-#DEBUG=true
+DEBUG=true
 
 ##########################################################################################
 # Replace list
@@ -203,12 +203,12 @@ c_pg() {
 		if [ -z $PG ]; then
 			ui_print " "
 			ui_print " "
-			ui_print "   ----- Wide Gesture -----"
+			ui_print "   ----- 10's Pill Gesture -----"
 			ui_print " "
 			ui_print "   Widen your Android 10's pill gesture."
 			ui_print " "
 			ui_print " "
-			ui_print "   Install Wide Gesture?"
+			ui_print "   Install 10's Pill Gesture?"
 			ui_print " "
 			ui_print "   Vol+ = Yes, Vol- = No"
 			if $VKSEL; then
