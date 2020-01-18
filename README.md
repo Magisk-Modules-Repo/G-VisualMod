@@ -1,7 +1,7 @@
 <h1 align="center">G-Visual Mod</h1>
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Version-v2.0.1-green.svg?longCache=true&style=popout-round"
+  <img src="https://img.shields.io/badge/Version-v2.1-green.svg?longCache=true&style=popout-round"
   alt="Version" />
   <strong>Various visual mods for Android.</strong>
 </div>
@@ -11,30 +11,78 @@
   - Change your UI's corner radius.
 - StatusBar Height Mod
   - Make your statusbar taller (Notched display).
-- NotchKiller mod
-  - Override notch, always full screen in all appps.
+- NotchKiller Mod
+  - Override notch, always full screen in all apps.
 - 10's Pill Gesture Mod (Only Android 10 supported!)
-  - Widen your Android 10's pill gesture.
+  - Change your Android 10's pill gesture looks.
   
   How to activate NotchKiller mod:
   - Go to developer option,
   - Search Display Cutout,
   - Choose NotchKiller,
   - Done!
-  
+
+## Mod list + Preview
+- UI Radius Mod
+	- <a href="https://imgur.com/a/s83OBPx">RectangUI</a>
+	- RoundyUI
+		- <a href="https://imgur.com/a/7tq6K52">Medium</a>
+		- <a href="https://imgur.com/a/pWySXCG">Large</a>
+		
+- StatusBar Height Mod
+	- Medium
+	
+		![](https://imgur.com/arBTVGo.jpg)
+		
+	- Large
+	
+		![](https://imgur.com/ydb1kTA.jpg)
+		
+	- eXtra Large
+	
+		![](https://imgur.com/O5U6Ggj.jpg)
+		
+		
+- NotchKiller mod (No preview possible)
+
+- 10's Pill Gesture Mod
+	- Wide Mode
+		- Thicc
+		
+			![](https://imgur.com/AcOSDJg.jpg)
+			
+		- Not thicc or thin
+		
+			![](https://imgur.com/dqRbxwg.jpg)
+			
+		- Thinn
+		
+			![](https://imgur.com/t0aQ6lp.jpg)
+			
+			
+	- Immersive Mode
+	
+		![](https://imgur.com/1I7QvkS.jpg)
+		
+	- Dot Mode
+	
+		![](https://imgur.com/25c1kZL.jpg)
+		
+	- Invinsible Mode
+	
+		![](https://imgur.com/PvguS4I.jpg)
+		
+	
 ## Compatibility
-- Magisk 18.0 +
+- Magisk 18.0 + (20+ for Android 10)
 - Android 9.0 (Pie) and higher.
 - Android 10 (Q) only for 10's Pill Gesture mod.
-- AOSP Based rom (e.g. OxygenOS).
-- MIUI Pie (Only StatusBar Mod supported!).
+- AOSP Based rom.
+- MIUI Pie+ (Only StatusBar Mod supported!).
 
 Reports (Based on tester):
 - OxygenOS (OnePlus) worked!
 - OneUI (Samsung) worked!
-
-## Screenshots
-- On my <a href="https://t.me/tzupdates">Channel</a>.
 
 ## How To Install
 - Execute the zip using Magisk,
@@ -48,14 +96,16 @@ Reports (Based on tester):
   UI Radius Mod, <code>urm[radius].zip</code>
   - Radius: <code>r(RectangUI), m(Medium), l(Large)</code>
 
-  StatusBar Mod, sbh[height].zip</code>
+  StatusBar Mod, <code>sbh[height].zip</code>
   - Height: <code>m(Medium), l(Large), xl(eXtra Large)</code>
 
-  NotchKiller, nk[opt].zip</code>
+  NotchKiller, <code>nk[opt].zip</code>
   - Options: <code>y(Yes), n(No)</code>
   
-  10's Pill Gesture, pg[opt].zip</code>
-  - Options: <code>y(Yes), n(No)</code>
+  10's Pill Gesture, <code>pg[opt][m(immersive)].zip</code>
+  - Options:
+	- <code>ios(Thicc), nth(Not thicc or thin), th(Thinn)
+	- dot(Dot mode), inv(Invinsible mode</code>
 
 ## How To Uninstall (PLEASE READ TO AVOID BOOTLOOP CHANCES)
 - Reinstall the module.
@@ -71,6 +121,12 @@ Or...
   - If still bootloop, just force restart by holding power button.
 
 ## Changelog
+- v2.1
+  - Fixed URM when QS icon shape changed,
+  - Fixed MIUI detector bug,
+  - Added Immersive option (10's Pill Gesture),
+  - Added Invinsible Mode (10's Pill Gesture),
+  - Added Dot Mode (10's Pill Gesture).
 - v2.0.1
   - Pie rom fixed.
 - v2.0

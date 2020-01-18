@@ -39,68 +39,65 @@ REPLACE="
 ##########################################################################################
 # Custom Logic
 ##########################################################################################
-VEN=/system/vendor
-[ -L /system/vendor ] && VEN=/vendor
-if [ -f $VEN/build.prop ]; then BUILDS="/system/build.prop $VEN/build.prop"; else BUILDS="/system/build.prop"; fi
-# Thanks Narsil/Sauron for the huge props list for various android systems
-# Far easier to look there then ask users for their build.props
-MIUI=$(grep "ro.miui.ui.version.*" $BUILDS)
-if [ $MIUI ]; then
+
+# Spaces
+sp() {
 	ui_print " "
 	ui_print " "
-	ui_print " MIUI Detected"
-	ui_print " Only StatusBar Height supported"
-	ui_print " "
-	ui_print " "
-fi
+}
 
 # Zipname Simplifier
-zo_urm() {
+zp_urm() {
 	case $(echo $(basename $ZIPFILE) | tr '[:upper:]' '[:lower:]') in
-		*urmm*) URM=true; URMR=false; URMM=true; URML=false;;
-		*urml*) URM=true; URMR=false; URMM=false; URML=true;;
+		*urmm*) URM=true; URMR=false; URMM=true; URML=false; URMVL=true ;;
+		*urml*) URM=true; URMR=false; URMM=false; URML=true; URMVM=true ;;
 		*urmr*) URM=true; URMR=true; URMM=false; URML=false;;
 	esac
 }
-zo_sbh() {
+zp_sbh() {
 	case $(echo $(basename $ZIPFILE) | tr '[:upper:]' '[:lower:]') in
 		*sbhm*) SBH=true; SBHM=true; SBHL=false; SBHXL=false;;
 		*sbhl*) SBH=true; SBHM=false; SBHL=true; SBHXL=false;;
 		*sbhxl*) SBH=true; SBHM=false; SBHL=false; SBHXL=true;;
 	esac
 }
-zo_nk() {
+zp_nk() {
 	case $(echo $(basename $ZIPFILE) | tr '[:upper:]' '[:lower:]') in
 		*nky*) NK=true;;
 	esac
 }
-zo_pg() {
+zp_pg() {
 	case $(echo $(basename $ZIPFILE) | tr '[:upper:]' '[:lower:]') in
-		*pgy*) PG=true;;
+		*pgios*) PG=true; PGIOS=true; PGIM=false;;
+		*pgiosm*) PG=true; PGIOS=true; PGIM=false;;
+		*pgnth*) PG=true; PGIOS=true; PGIM=false;;
+		*pgnthm*) PG=true; PGIOS=true; PGIM=false;;
+		*pgth*) PG=true; PGIOS=true; PGIM=false;;
+		*pgthm*) PG=true; PGIOS=true; PGIM=false;;
+		*pgdot*) PG=true; PGIOS=true; PGIM=false;;
+		*pginv*) PG=true; PGIOS=true; PGIM=false;;
 	esac
 }
 
 # Chooser Simplifier
 c_urm() {
 	if [ -z $URM ] || [ -z $URMM ] || [ -z $URML ]; then
+		sp
      	ui_print "   ----- UI Radius Mod ------"
 		ui_print " "
 		ui_print "   Change your UI's corner radius."
-		ui_print " "
-		ui_print " "
+		sp
 		ui_print "   Install UI Radius Mod?"
 		ui_print " "
 		ui_print "   Vol+ = Yes, Vol- = No"
 		if $VKSEL; then
-			ui_print " "
-			ui_print " "
+			sp
 			ui_print "   Install RoundyUI or RectangUI?"
 			ui_print " "
 			ui_print "   Vol+ = RoundyUI, Vol- = RectangUI"
 			URM=true
 			if $VKSEL; then
-				ui_print " "
-				ui_print " "
+				sp
 				ui_print "   Pick variant for UI"
 				ui_print " "
 				ui_print "   Vol+ = Medium, Vol- = Large"
@@ -109,8 +106,7 @@ c_urm() {
 				else
 					URML=true
 				fi
-				ui_print " "
-				ui_print " "
+				sp
 				ui_print "   Pick variant for Vol.bar"
 				ui_print " "
 				ui_print "   Vol+ = Medium, Vol- = Large"
@@ -131,25 +127,21 @@ c_urm() {
 }
 c_sbh() {
 	if [ -z $SBH ] || [ -z $SBHM ] || [ -z $SBHL ] || [ -z $SBHXL ]; then
-    	ui_print " "
-		ui_print " "
+		sp
        	ui_print "   ------ StatusBar Height Mod ------"
 		ui_print " "
 		ui_print "   Make your statusbar taller (Notched display)."
-		ui_print " "
-		ui_print " "
+		sp
 		ui_print "   Install StatusBar Height Mod?"
 		ui_print " "
 		ui_print "   Vol+ = Yes, Vol- = No"
 		if $VKSEL; then
-			ui_print " "
-			ui_print " "
+			sp
 			ui_print "   Size list:"
 			ui_print " - Medium (Comfort looking)"
 			ui_print " - Large (Match your lockscreen statusbar)"
 			ui_print " - eXtra Large (Same height as classic 3 buttons navbar)"
-			ui_print " "
-			ui_print " "
+			sp
 			ui_print "   OK, now pick height:"
 			ui_print " "
 			ui_print "   Vol+ = Medium, Vol- = Other sizes"
@@ -157,9 +149,8 @@ c_sbh() {
 			if $VKSEL; then
 				SBHM=true				
 			else
-			    ui_print " "
-			    ui_print " "
-				ui_print "   Pick remaining height:"
+				sp
+				ui_print "   Pick remaining heights:"
 				ui_print " "
 				ui_print "   Vol+ = Large, Vol- = eXtra Large"
 				if $VKSEL; then
@@ -177,14 +168,12 @@ c_sbh() {
 }
 c_nk() {
 	if [ -z $NK ]; then
-    	ui_print " "
-		ui_print " "
-  		ui_print "   ----- NotchKiller -----"
+		sp
+  		ui_print "   ----- NotchKiller Mod -----"
    		ui_print " "
-    	ui_print "   Override notch, always full screen in all appps."
- 	    ui_print " "
-    	ui_print " "
-   		ui_print "   Install NotchKiller?"
+    	ui_print "   Override notch, always full screen in all apps."
+		sp
+   		ui_print "   Install NotchKiller Mod?"
     	ui_print " "
     	ui_print "   Vol+ = Yes, Vol- = No"
        	if $VKSEL; then
@@ -193,7 +182,7 @@ c_nk() {
        	    NK=false
        	fi
     else
-        ui_print "   NotchKiller install method specified in zipname!"
+        ui_print "   NotchKiller Mod install method specified in zipname!"
 	fi
 }
 c_pg() {
@@ -201,35 +190,150 @@ c_pg() {
 	    PG=false
 	else
 		if [ -z $PG ]; then
+			sp
+			ui_print "   ----- 10's Pill Gesture Mod -----"
 			ui_print " "
-			ui_print " "
-			ui_print "   ----- 10's Pill Gesture -----"
-			ui_print " "
-			ui_print "   Widen your Android 10's pill gesture."
-			ui_print " "
-			ui_print " "
-			ui_print "   Install 10's Pill Gesture?"
+			ui_print "   Change your Android 10's pill gesture looks."
+			sp
+			ui_print "   Install 10's Pill Gesture Mod?"
 			ui_print " "
 			ui_print "   Vol+ = Yes, Vol- = No"
 			if $VKSEL; then
 				PG=true
-			    ui_print " "
-			    ui_print " "
-				ui_print "   Pick variant:"
+				sp
+				ui_print "   Mode list:"
+				ui_print " - Wide mode (Thickness and Immersive option available)"
+				ui_print " - Dot mode (Cute immersive dot)"
+				ui_print " - Invinsible mode (Hidden + Immersive)"
+				sp
+				ui_print "   Choose modes:"
 				ui_print " "
-				ui_print "   Vol+ = Thick and adjusted (IOS like position)"
-				ui_print "   Vol- = Just wide and thin"
+				ui_print "   Vol+ = Wide mode, Vol- = Other modes"
 				if $VKSEL; then
-					PGIOS=true
+					PGWD=true
+					sp
+					ui_print "   Thickness list:"
+					ui_print " - Thicc (IOS looks + position)"
+					ui_print " - Not thicc or thin (OOS looks)"
+					ui_print " - Thinn (Original thickness)"
+					sp
+					ui_print "   Pick thickness:"
+					ui_print " "
+					ui_print "   Vol+ = Thicc, Vol- = Other sizes"
+					ui_print "   "
+					if $VKSEL; then
+						PGIOS=true
+					else
+						sp
+						ui_print "   Pick remaining thickness:"
+						ui_print " "
+						ui_print "   Vol+ = Not thicc or thin, Vol- = Thinn"
+						ui_print "   "
+						if $VKSEL; then
+							PGNTH=true
+						else
+							PGTH=true	
+						fi	
+					fi
+					sp
+					ui_print "   Activate Immersive mode?"
+					ui_print " "
+					ui_print "   Vol+ = Yes, Vol- = No"
+					if $VKSEL; then
+						PGIM=true
+					else
+						PGIM=false	
+					fi
 				else
-					PGTH=true	
+					sp
+					ui_print "   Pick remaining modes:"
+					ui_print " "
+					ui_print "   Vol+ = Dot mode, Vol- = Invinsible mode"
+					if $VKSEL; then
+						PGDOT=true
+					else
+						PGINV=false	
+					fi
 				fi
+
 			else
 				PG=false
 			fi
 		else
-			ui_print "   Wide Gesture install method specified in zipname!"
+			ui_print "   10's Pill Gesture Mod install method specified in zipname!"
 		fi
+	fi
+}
+
+# Functions to check if dirs is mounted
+is_mounted() {
+	grep " `readlink -f $1` " /proc/mounts 2>/dev/null
+	return $?
+}
+
+is_mounted_rw() {
+	grep " `readlink -f $1` " /proc/mounts | grep " rw," 2>/dev/null
+	return $?
+}
+
+mount_rw() {
+	mount -o remount,rw $1
+	DID_MOUNT_RW=$1
+}
+
+unmount_rw() {
+	if [ "x$DID_MOUNT_RW" = "x$1" ]; then
+		mount -o remount,ro $1
+	fi
+}
+
+unmount_rw_stepdir(){
+  if [ "$MOUNTPRODUCT" ]; then
+    is_mounted_rw " /product" || unmount_rw /product
+  elif [ "$OEM" ];then
+    is_mounted_rw " /oem" && unmount_rw /oem
+    is_mounted_rw " /oem/OP" && unmount_rw /oem/OP
+  fi
+}
+
+setvars(){
+	if [ -d "/product/overlay" ]; then
+		PRODUCT=true
+		# Yay, magisk supports bind mounting /product now
+		MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
+		if [ $MAGISK_VER_CODE -ge "20000" ]; then
+			MOUNTPRODUCT=
+			STEPDIR=$MODPATH/system/product/overlay
+		else
+			if [ $(resetprop ro.build.version.sdk) -ge 29 ]; then
+				echo "Magisk v20 is required for users on Android 10"
+				echo "Please update Magisk and try again."
+				exit 1
+			fi
+			MOUNTPRODUCT=true
+			STEPDIR=/product/overlay
+			is_mounted " /product" || mount /product
+			is_mounted_rw " /product" || mount_rw /product
+		fi
+	elif [ -d /oem/OP ];then
+		OEM=true
+		is_mounted " /oem" || mount /oem
+		is_mounted_rw " /oem" || mount_rw /oem
+		is_mounted " /oem/OP" || mount /oem/OP
+		is_mounted_rw " /oem/OP" || mount_rw /oem/OP
+		STEPDIR=/oem/OP/OPEN_US/overlay/framework
+	else
+		PRODUCT=; OEM=; MOUNTPRODUCT=
+		STEPDIR=$MODPATH/system/vendor/overlay
+	fi
+	if [ "$MOUNTPRODUCT" ]; then
+		is_mounted " /product" || mount /product
+		is_mounted_rw " /product" || mount_rw /product
+	elif [ "$OEM" ];then
+		is_mounted " /oem" || mount /oem
+		is_mounted_rw " /oem" || mount_rw /oem
+		is_mounted " /oem/OP" || mount /oem/OP
+		is_mounted_rw " /oem/OP" || mount_rw /oem/OP
 	fi
 }
 

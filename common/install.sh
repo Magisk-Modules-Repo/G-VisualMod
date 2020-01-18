@@ -1,14 +1,28 @@
+MIUI=$(grep_prop "ro.miui.ui.version.*")
+if [ $MIUI ]; then
+	sp
+	ui_print " MIUI Detected"
+	ui_print " Only StatusBar Height Mod supported."
+	sp
+fi
+
+# Path-to-install locator
+while [ ! -d "$STEPDIR" ]; do
+    setvars
+    mkdir -p $STEPDIR
+done
+
 # Zipname Initiate
 if [ $MIUI ]; then
 	OIFS=$IFS; IFS=\|
-	zo_sbh
+	zp_sbh
 	IFS=$OIFS
 else
 	OIFS=$IFS; IFS=\|
-	zo_urm
-	zo_sbh
-	zo_nk
-	zo_pg
+	zp_urm
+	zp_sbh
+	zp_nk
+	zp_pg
 	IFS=$OIFS
 fi
 
@@ -30,10 +44,10 @@ else
 		if [ -z $VKSEL ]; then
 			ui_print "  ! Some options not specified in zipname!"
 			ui_print "  Using defaults if not specified in zipname!"
-			[ -z $URM ] && URM=true; URMM=true
+			[ -z $URM ] && URM=true; URMM=true; URMVM=true
 			[ -z $SBH ] && SBH=true; SBHM=true
 			[ -z $NK ] && NK=false
-			[ -z $PG ] && PG=True; PGIOS=true
+			[ -z $PG ] && PG=True; PGIOS=true; PGIM=false
 		else
 			c_urm
 			c_sbh
@@ -45,94 +59,7 @@ else
 	fi
 fi
 
-ui_print " "
-ui_print " "
-ui_print "-  Preparing  -"
-ui_print " "
-ui_print " "
-
-# Functions to check if dirs is mounted
-is_mounted() {
-	grep " `readlink -f $1` " /proc/mounts 2>/dev/null
-	return $?
-}
-
-is_mounted_rw() {
-	grep " `readlink -f $1` " /proc/mounts | grep " rw," 2>/dev/null
-	return $?
-}
-
-mount_rw() {
-	mount -o remount,rw $1
-	DID_MOUNT_RW=$1
-}
-
-unmount_rw() {
-	if [ "x$DID_MOUNT_RW" = "x$1" ]; then
-		mount -o remount,ro $1
-	fi
-}
-
-unmount_rw_stepdir(){
-  if [ "$MOUNTPRODUCT" ]; then
-    is_mounted_rw " /product" || unmount_rw /product
-  elif [ "$OEM" ];then
-    is_mounted_rw " /oem" && unmount_rw /oem
-    is_mounted_rw " /oem/OP" && unmount_rw /oem/OP
-  fi
-}
-
-setvars(){
-	SUFFIX="/overlay/GVM"
-	if [ -d "/product/overlay" ]; then
-		PRODUCT=true
-		# Yay, magisk supports bind mounting /product now
-		MAGISK_VER_CODE=$(grep "MAGISK_VER_CODE=" /data/adb/magisk/util_functions.sh | awk -F = '{ print $2 }')
-		if [ $MAGISK_VER_CODE -ge "20000" ]; then
-			MOUNTPRODUCT=
-			STEPDIR=$MODPATH/system/product$SUFFIX
-		else
-			if [ $(resetprop ro.build.version.sdk) -ge 29 ]; then
-				echo "\nMagisk v20 is required for users on Android 10"
-				echo "Please update Magisk and try again."
-				exit 1
-			fi
-			MOUNTPRODUCT=true
-			STEPDIR=/product$SUFFIX
-			is_mounted " /product" || mount /product
-			is_mounted_rw " /product" || mount_rw /product
-		fi
-	elif [ -d /oem/OP ];then
-		OEM=true
-		is_mounted " /oem" || mount /oem
-		is_mounted_rw " /oem" || mount_rw /oem
-		is_mounted " /oem/OP" || mount /oem/OP
-		is_mounted_rw " /oem/OP" || mount_rw /oem/OP
-		STEPDIR=/oem/OP/OPEN_US/overlay/framework
-	else
-		PRODUCT=; OEM=; MOUNTPRODUCT=
-		STEPDIR=$MODPATH/system/vendor$SUFFIX
-	fi
-	if [ "$MOUNTPRODUCT" ]; then
-		is_mounted " /product" || mount /product
-		is_mounted_rw " /product" || mount_rw /product
-	elif [ "$OEM" ];then
-		is_mounted " /oem" || mount /oem
-		is_mounted_rw " /oem" || mount_rw /oem
-		is_mounted " /oem/OP" || mount /oem/OP
-		is_mounted_rw " /oem/OP" || mount_rw /oem/OP
-	fi
-}
-
-# Path-to-install locator
-while [ ! -d "$STEPDIR" ]; do
-    setvars
-    mkdir -p $STEPDIR
-done
-
-OVPATH=${STEPDIR::-4}
-echo "The overlay will be copied to $OVPATH..."
-
+echo "The overlay will be copied to $STEPDIR..."
 
 # Mods Aliasing
 URMDIR=$MODPATH/mod/GVM-URM
@@ -140,90 +67,100 @@ SBHDIR=$MODPATH/mod/GVM-SBH
 NKDIR=$MODPATH/mod/GVM-NK
 PGDIR=$MODPATH/mod/GVM-PG
 
-ui_print " "
-ui_print " "
+sp
 ui_print "-  Copying files  -"
-ui_print " "
-ui_print " "
+sp
 
 # Copying Files
 if $URM; then
 	ui_print "-  UI Radius Mod Selected  -"
-	mkdir -p $STEPDIR/GVM-URM-1
-	mkdir -p $STEPDIR/GVM-URM-2
-	mkdir -p $STEPDIR/GVM-URM-3
 	if [ $URMM = true ] ; then
 		ui_print "-  RoundyUI Medium Selected  -"
-		cp -f $URMDIR/GVM-URM_M.apk $STEPDIR/GVM-URM-1
-		cp -f $URMDIR/GVM-URM_M2.apk $STEPDIR/GVM-URM-2
+		cp_ch -r $URMDIR/GVM-URM_M.apk $STEPDIR/GVM-URM-1
+		cp_ch -r $URMDIR/GVM-URM_M2.apk $STEPDIR/GVM-URM-2
 	elif [ $URML = true ] ; then
 		ui_print "-  RoundyUI Large Selected  -"
-		cp -f $URMDIR/GVM-URM_L.apk $STEPDIR/GVM-URM-1
-		cp -f $URMDIR/GVM-URM_L2.apk $STEPDIR/GVM-URM-2
+		cp_ch -r $URMDIR/GVM-URM_L.apk $STEPDIR/GVM-URM-1
+		cp_ch -r $URMDIR/GVM-URM_L2.apk $STEPDIR/GVM-URM-2
 	elif [ $URMR = true ] ; then
 		ui_print "-  RectangUI Selected  -"
-		cp -f $URMDIR/GVM-URM_R.apk $STEPDIR/GVM-URM-1
-		cp -f $URMDIR/GVM-URM_R2.apk $STEPDIR/GVM-URM-2
-		cp -f $URMDIR/GVM-URM_R3.apk $STEPDIR/GVM-URM-3
+		cp_ch -r $URMDIR/GVM-URM_R.apk $STEPDIR/GVM-URM-1
+		cp_ch -r $URMDIR/GVM-URM_R2.apk $STEPDIR/GVM-URM-2
+		cp_ch -r $URMDIR/GVM-URM_R3.apk $STEPDIR/GVM-URM-3
 	fi
 	if [ $URMVM = true ] ; then
 		ui_print "-  RoundyUI Medium Vol Selected  -"
-		cp -f $URMDIR/GVM-URM_M3.apk $STEPDIR/GVM-URM-3
+		cp_ch -r $URMDIR/GVM-URM_M3.apk $STEPDIR/GVM-URM-3
 	elif [ $URMVL = true ] ; then
 		ui_print "-  RoundyUI Large Vol Selected  -"
-		cp -f $URMDIR/GVM-URM_L3.apk $STEPDIR/GVM-URM-3
+		cp_ch -r $URMDIR/GVM-URM_L3.apk $STEPDIR/GVM-URM-3
 	fi
+	cp -r -f $URMDIR/Icon* $STEPDIR
 fi
 
 if $SBH; then
-	ui_print "-  StatusBar Height Selected  -"
-	mkdir -p $STEPDIR/GVM-SBH
+	ui_print "-  StatusBar Height Mod Selected  -"
 	if [ $SBHM = true ] ; then
 		ui_print "-  StatusBar Height Medium Selected  -"
-		cp -f $SBHDIR/GVM-SBH_M.apk $STEPDIR/GVM-SBH
+		cp_ch -r $SBHDIR/GVM-SBH_M.apk $STEPDIR/GVM-SBH
 	elif [ $SBHL = true ] ; then
 		ui_print "-  StatusBar Height Large Selected  -"
-		cp -f $SBHDIR/GVM-SBH_L.apk $STEPDIR/GVM-SBH
+		cp_ch -r $SBHDIR/GVM-SBH_L.apk $STEPDIR/GVM-SBH
 	elif [ $SBHXL = true ] ; then
 		ui_print "-  StatusBar Height eXtra Large Selected  -"
-		cp -f $SBHDIR/GVM-SBH_XL.apk $STEPDIR/GVM-SBH
+		cp_ch -r $SBHDIR/GVM-SBH_XL.apk $STEPDIR/GVM-SBH
 	fi
 fi
 
 if $NK; then
-	ui_print "-  NotchKiller Selected  -"
-	mkdir -p $STEPDIR/GVM-NK
-	cp -r -f $NKDIR/GVM-NK.apk $STEPDIR/GVM-NK
+	ui_print "-  NotchKiller Mod Selected  -"
+	cp_ch -r $NKDIR/GVM-NK.apk $STEPDIR/GVM-NK
 fi
 
 if $PG; then
-	ui_print "-  10's Pill Gesture Selected  -"
-	mkdir -p $STEPDIR/GVM-PG
-	if [ $PGIOS = true ]; then
-		cp -r -f $PGDIR/GVM-PG.apk $STEPDIR/GVM-PG
-		cp -r -f $PGDIR/Nav* $STEPDIR
-	elif [ $PGTH = true ] ; then
-		cp -r -f $PGDIR/GVM-PG-TH.apk $STEPDIR/GVM-PG
+	ui_print "-  10's Pill Gesture Mod Selected  -"
+	if [ $PGWD = true ]; then
+		ui_print "-  Wide Mode Selected  -"
+		if [ $PGIOS = true ]; then
+			ui_print "-  Thicc Selected  -"
+			cp_ch -r $PGDIR/GVM-PG-IOS.apk $STEPDIR/GVM-PG
+			cp -r -f $PGDIR/TAL/Nav* $STEPDIR
+		elif [ $PGNTH = true ] ; then
+			ui_print "-  Not thicc or thin Selected  -"
+			cp_ch -r $PGDIR/GVM-PG-NTH.apk $STEPDIR/GVM-PG
+		elif [ $PGTH = true ] ; then
+			ui_print "-  Thinn Selected  -"
+			cp_ch -r $PGDIR/GVM-PG-THN.apk $STEPDIR/GVM-PG
+		fi
+		if [ $PGIM = true ]; then
+			ui_print "-  Immersive Mode Selected  -"
+			cp -r -f $PGDIR/HID/Nav* $STEPDIR
+		fi
+	elif [ $PGDOT = true ]; then
+		ui_print "-  Dot Mode Selected  -"
+		cp_ch -r $PGDIR/GVM-PG-DOT.apk $STEPDIR/GVM-PG
+		cp -r -f $PGDIR/HID/Nav* $STEPDIR
+	elif [ $PGINV = true ]; then
+		ui_print "-  Invinsible Mode Selected  -"
+		cp_ch -r $PGDIR/GVM-PG-INV.apk $STEPDIR/GVM-PG
+		cp -r -f $PGDIR/HID/Nav* $STEPDIR
 	fi
 fi
 
-if [ -z "$(ls -A $STEPDIR)" ] ; then
+if [ "$API" == 29 ]; then
+	:
+else
+	find $STEPDIR/GVM* -type f -name '*.apk' -exec mv {} $STEPDIR \;
+fi
+
+rm -rf $MODPATH/mod
+
+if [ -z "$(ls -A $STEPDIR/GVM*)" ] ; then
 	echo "The overlays was not copied, please send logs to the developer."
 	exit 1
 else
 	:
 fi
-
-if [ "$API" == 29 ]; then
-	mv $STEPDIR/* $OVPATH
-	rm -rf $STEPDIR
-else
-	find $STEPDIR -type f -name '*.apk' -exec mv {} $OVPATH \;
-	rm -rf $STEPDIR
-fi
-
-
-rm -rf $MODPATH/mod
 
 unmount_rw_stepdir
 
@@ -236,11 +173,9 @@ if $NK; then
     ui_print " - Search Display Cutout"
     ui_print " - Choose NotchKiller"
     ui_print " - Done!"
-    ui_print " "
-  	ui_print " "
+	sp
   	ui_print "  Press any vol button to complete installation."
-	ui_print " "
-	ui_print " "
+	sp
   	if $VKSEL; then
       	ui_print "  Completing Installation...."
     else
