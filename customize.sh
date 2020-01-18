@@ -204,7 +204,7 @@ c_pg() {
 				ui_print "   Mode list:"
 				ui_print " - Wide mode (Thickness and Immersive option available)"
 				ui_print " - Dot mode (Cute immersive dot)"
-				ui_print " - Invinsible mode (Hidden + Immersive)"
+				ui_print " - Invisible mode (Hidden + Immersive)"
 				sp
 				ui_print "   Choose modes:"
 				ui_print " "
@@ -248,11 +248,11 @@ c_pg() {
 					sp
 					ui_print "   Pick remaining modes:"
 					ui_print " "
-					ui_print "   Vol+ = Dot mode, Vol- = Invinsible mode"
+					ui_print "   Vol+ = Dot mode, Vol- = Invisible mode"
 					if $VKSEL; then
 						PGDOT=true
 					else
-						PGINV=false	
+						PGINV=true
 					fi
 				fi
 

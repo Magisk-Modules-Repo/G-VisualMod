@@ -1,7 +1,7 @@
 <h1 align="center">G-Visual Mod</h1>
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Version-v2.1-green.svg?longCache=true&style=popout-round"
+  <img src="https://img.shields.io/badge/Version-v2.1.1-green.svg?longCache=true&style=popout-round"
   alt="Version" />
   <strong>Various visual mods for Android.</strong>
 </div>
@@ -68,7 +68,7 @@
 	
 		![](https://imgur.com/25c1kZL.jpg)
 		
-	- Invinsible Mode
+	- Invisible Mode
 	
 		![](https://imgur.com/PvguS4I.jpg)
 		
@@ -105,7 +105,7 @@ Reports (Based on tester):
   10's Pill Gesture, <code>pg[opt][m(immersive)].zip</code>
   - Options:
 	- <code>ios(Thicc), nth(Not thicc or thin), th(Thinn)
-	- dot(Dot mode), inv(Invinsible mode</code>
+	- dot(Dot mode), inv(Invisible mode</code>
 
 ## How To Uninstall (PLEASE READ TO AVOID BOOTLOOP CHANCES)
 - Reinstall the module.
@@ -121,11 +121,13 @@ Or...
   - If still bootloop, just force restart by holding power button.
 
 ## Changelog
+- v2.1.1
+  - This changelog is hidden :D (RIP inlish).
 - v2.1
   - Fixed URM when QS icon shape changed,
   - Fixed MIUI detector bug,
   - Added Immersive option (10's Pill Gesture),
-  - Added Invinsible Mode (10's Pill Gesture),
+  - Added Invisible Mode (10's Pill Gesture),
   - Added Dot Mode (10's Pill Gesture).
 - v2.0.1
   - Pie rom fixed.

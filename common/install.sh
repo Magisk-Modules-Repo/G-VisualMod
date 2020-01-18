@@ -141,7 +141,7 @@ if $PG; then
 		cp_ch -r $PGDIR/GVM-PG-DOT.apk $STEPDIR/GVM-PG
 		cp -r -f $PGDIR/HID/Nav* $STEPDIR
 	elif [ $PGINV = true ]; then
-		ui_print "-  Invinsible Mode Selected  -"
+		ui_print "-  Invisible Mode Selected  -"
 		cp_ch -r $PGDIR/GVM-PG-INV.apk $STEPDIR/GVM-PG
 		cp -r -f $PGDIR/HID/Nav* $STEPDIR
 	fi
