@@ -1,0 +1,4 @@
+<resources>
+    <dimen name="quick_qs_offset_height">28dp</dimen>
+    <dimen name="quick_qs_total_height">156dp</dimen>
+</resources>

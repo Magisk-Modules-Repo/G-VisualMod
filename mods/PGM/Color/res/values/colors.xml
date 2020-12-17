@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="navigation_<var>handle_light_color">#<ltrp><lclr></color>
+    <color name="navigation_<var>handle_dark_color">#<dtrp><dclr></color>
+</resources>

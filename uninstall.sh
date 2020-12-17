@@ -1,4 +1,13 @@
-if [ -f $FILE ]; then
+OVERLAY='/data/resource-cache/overlays.list'
+if [ -f "$OVERLAY" ]; then
+  ui_print " "
+  ui_print "   Removing $OVERLAY"
+  rm -f "$OVERLAY"
+  rm -rf /data/resource-cache
+fi
+
+# Don't modify anything after this
+if [ -f $INFO ]; then
   while read LINE; do
     if [ "$(echo -n $LINE | tail -c 1)" == "~" ]; then
       continue
@@ -11,6 +20,6 @@ if [ -f $FILE ]; then
         [ "$(ls -A $LINE 2>/dev/null)" ] && break 1 || rm -rf $LINE
       done
     fi
-  done < $FILE
-  rm -f $FILE $(dirname $FILE)/.$MODID-module.prop
+  done < $INFO
+  rm -f $INFO
 fi

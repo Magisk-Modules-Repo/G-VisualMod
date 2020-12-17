@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="navigation_handle_radius"><val>dp</dimen>
+	<dimen name="navigation_handle_bottom"><val2>dp</dimen>
+	<dimen name="navigation_home_handle_width"><val3>dp</dimen>
+</resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+        package="com.android.internal.display.cutout.emulation.notchkiller"
+        android:versionCode="1"
+        android:versionName="1.0"
+		android:compileSdkVersion="<vapi>" 
+		android:compileSdkVersionCodename="<vcde>"
+		platformBuildVersionCode="<vapi>"
+		platformBuildVersionName="<vcde>">
+	<uses-sdk
+		android:minSdkVersion="<vapi>"
+		android:targetSdkVersion="<vapi>"/>
+    <overlay android:targetPackage="android"
+        android:category="com.android.internal.display_cutout_emulation"
+        android:priority="1"/>
+    <application android:label="@string/display_cutout_emulation_overlay"
+		android:hasCode="false"
+		android:extractNativeLibs="false"/>
+</manifest>

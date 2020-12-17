@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	package="com.gnonymous.gvm.pgm.color"
+	android:versionCode="1"
+	android:versionName="1.0">
+    <overlay android:targetPackage="com.android.systemui"
+        android:priority="100"
+		android:isStatic="true"/>
+	<application android:hasCode="false"
+		android:extractNativeLibs="false" />
+</manifest>

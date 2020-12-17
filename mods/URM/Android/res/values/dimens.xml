@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="subtitle_corner_radius"><val>dp</dimen>
+	<dimen name="subtitle_shadow_radius"><val>dp</dimen>
+	<dimen name="dialog_corner_radius"><val>dp</dimen>
+    <dimen name="chooser_corner_radius"><val>dp</dimen>
+</resources>

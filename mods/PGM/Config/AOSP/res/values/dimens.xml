@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="navigation_bar_height"><val>dp</dimen>
+    <dimen name="navigation_bar_height_landscape"><val>dp</dimen>
+    <dimen name="navigation_bar_width"><val>dp</dimen>
+    <dimen name="navigation_bar_frame_height"><val2>dp</dimen>
+    <dimen name="navigation_bar_gesture_height"><val3>dp</dimen>
+</resources>

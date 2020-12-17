@@ -1,8 +1,7 @@
 id=gvisualmod
 name=G-Visual Mod
-version=v2.1.1
-versionCode=23
-author=Gnonymous7
-description=Various visual mods for Android. Including your favorite RoundyUI!
-support=Telegram username: @Gnonymous7
-
+version=v3.0
+versionCode=25
+author=Gnonymous7 (Tzuyu)
+description=Customize your Android's Visual!
+support=t.me/Gnonymous7

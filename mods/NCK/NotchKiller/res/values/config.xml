@@ -1,0 +1,7 @@
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string translatable="false" name="config_mainBuiltInDisplayCutout">M 0,0 L 0, 0 C 0,0 0,0 0,0</string>
+    <string translatable="false" name="config_mainBuiltInDisplayCutoutRectApproximation">@*android:string/config_mainBuiltInDisplayCutout</string>
+    <bool name="config_fillMainBuiltInDisplayCutout">true</bool>
+</resources>
+
+
