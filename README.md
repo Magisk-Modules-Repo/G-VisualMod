@@ -9,9 +9,7 @@
  <strong>Customize your Android's Visual!</strong>
 </div>
 
-## Templates Preview
-
-	![](https://i.imgur.com/pZPi8qc.jpg)
+![](https://i.imgur.com/pZPi8qc.jpg)
 
 ## Compatibility
 - Magisk 20+;
