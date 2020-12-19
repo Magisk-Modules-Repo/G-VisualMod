@@ -9,7 +9,9 @@
  <strong>Customize your Android's Visual!</strong>
 </div>
 
-![](https://i.imgur.com/pZPi8qc.jpg)
+## Templates Preview
+
+	![](https://i.imgur.com/pZPi8qc.jpg)
 
 ## Compatibility
 - Magisk 20+;
@@ -20,7 +22,9 @@
 ## Known Bugs
 - Immersive mode and Pill Transparency wont work on OxygenOS!
 - UI Radius Mod wont work on MIUI 12!
-- Not all rom support UI radius iconshape option!
+- Not all rom support UI radius iconshape option! (Read at the bottom of this README!)
+
+
 
 ## What this module do
 ### UI Radius Mod
@@ -50,13 +54,15 @@ You can combine multiple options per-mod.
 
 Change UI radius
 ```
-Usage:	[radius].zip
+Usage:	[radius],[isr].zip
 	radius:
 	- Small					: rsmall
 	- Medium				: rmedium
 	- Large					: rlarge
+	isr (iconshape fix)
+	- Yes					: isr
 ```
-Example: rlarge.zip, that means modify UI radius to large.
+Example: rlarge,isr.zip, that means modify UI radius to large and fix iconshape.
 
 
 Change pill shape
@@ -140,6 +146,33 @@ Usage:	[mode].zip
 ```
 Example: nck.zip, that means activate notchkiller.
 
+## Applying radius to all icon shapes
+PLEASE READ!
+NOT ALL ROM SUPPORT THIS!
+
+You can try this option and check your iconshapes after
+
+Workaround if iconshapes are missing:
+1st solution:
+Select NO on this option
+and see if iconshapes are overriding UIRadius
+
+2nd solution:
+1. Disable this module in magisk manager
+2. Reboot
+3. Set up your iconshapes, font, accent, etc and apply it
+4. Install this module (you can restore other selected mods)
+5. Pick radius and select YES on this option
+Do not change styles to default, or you have to do this again
+
+If it still doesn't work:
+Type #iconshapefix on telegram Support Group (@tzlounge)
+It will guide you to report to your rom maintainer
+
+(Tested fine on RevengeOS A11)
+(Should've worked on Ressurection Remix)
+(Workaround successfull on crDroid A11)
+
 ## Credits
 - <a href="https://github.com/Zackptg5">Zackptg5</a> for MMT-Ex template.
 - <a href="https://github.com/topjohnwu">topjohnwu</a> for entire Magisk universe.
@@ -150,6 +183,12 @@ Example: nck.zip, that means activate notchkiller.
 - <a href="https://t.me/tzlounge">Support Group</a>.
 
 ## Changelog
+### v3.0.1
+  - Move "keyboard bottom height" option to a single mod;
+  - Increase time on selection;
+  - Nicer gaps;
+  - Reduced confusion on installing;
+
 ### v3.0 (changelogs also comes from my older PGM module)
   - Updated: MMT-Ex Template;
   - Updated: Volume Key Selector (MMT-Ex Addon);

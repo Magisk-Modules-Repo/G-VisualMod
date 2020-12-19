@@ -18,7 +18,7 @@ pick_opt() {
 		OPT=1
 		while true; do
 			ui_print "  $OPT"
-			if chooseport 30; then
+			if chooseport 50; then
 				OPT=$((OPT + 1))
 			else 
 				break
@@ -27,8 +27,9 @@ pick_opt() {
 		done
 		sp
 	elif [ $1 = back ]; then
+		ui_print "  "
 		ui_print "  Press any vol button to go back"
-		if chooseport 30; then
+		if chooseport 50; then
 			eval $2
 		else 
 			eval $2
@@ -38,7 +39,7 @@ pick_opt() {
 		ui_print "  Vol [+] = Yes, Vol [-] = No"
 		ui_print "  Select:"
 		sp
-		if chooseport 30; then
+		if chooseport 50; then
 			ui_print "-  Okay, will do  -"
 			eval $2=true
 		else
@@ -76,12 +77,12 @@ build_apk() {
 	cp_ch -r ${MODDIR}/${FAPK}.apk ${STEPDIR}/${DAPK}
 
 	if [ -s ${STEPDIR}/${DAPK}/${FAPK}.apk ]; then
-		ui_print "  Overlay successfully copied!"
+		:
 	else
 		abort "  The overlay was not copied, please send logs to the developer."
 	fi
 	sp
-	ui_print "  ${1} overlay created..."
+	ui_print "  ${1} overlay created!"
 }
 
 pre_install() {
@@ -137,7 +138,7 @@ older_install() {
 		esac
 		mods_check
 		ui_print "  Press any vol button to go to main menu"
-		chooseport 30
+		chooseport 50
 	fi
 }
 
@@ -197,15 +198,17 @@ incompatibility_check() {
 		sp
 		ui_print "  MIUI detected!"
 		ui_print "  UI Radius mod not supported!"
+		ui_print "  "
 		ui_print "  Press any vol button to continue"
-		chooseport 30
+		chooseport 50
 	fi
 	if [ $OOS ]; then
 		sp
 		ui_print "  OxygenOS detected!"
 		ui_print "  Immersive mode and Pill transparency not supported!"
+		ui_print "  "
 		ui_print "  Press any vol button to continue"
-		chooseport 30
+		chooseport 50
 	fi
 
 	if [ -d "/product/overlay" ]; then
@@ -245,12 +248,17 @@ main_menu() {
 	ui_print "  2. Pill Gesture"
 	ui_print "  3. Statusbar"
 	ui_print "  4. NotchKiller"
-	[ $MLOOP ] && ui_print "  5. CONTINUE" && ui_print "  6. SELECTED MOD(S)" && ui_print "  7. REMOVE SELECTED MOD(S)" && ui_print "  8. RESET ALL MOD(S)"
+	if [ $MLOOP ];then
+		ui_print "  "
+		ui_print "  5. Continue install"
+		ui_print "  6. Selected mod(s)"
+		ui_print "  7. Remove selected mod(s)"
+		ui_print "  8. Remove all selected mods"
+	fi
 	pick_opt multi $OPTLIM
 	if [ $OPT = 1 ] && [ $MIUI ]; then
 		sp
 		ui_print "  UI Radius not supported on MIUI"
-		sp
 		pick_opt back main_menu
 	fi
 	if [ $OPT = 1 ]; then
@@ -271,7 +279,6 @@ main_menu() {
 	fi
 	if [ $OPT = 6 ]; then
 		mods_check
-		sp
 		pick_opt back main_menu
 	fi
 	if [ $OPT = 7 ]; then
@@ -290,7 +297,7 @@ main_loop() {
 		sp
 		ui_print "  Continue or go back?"
 		ui_print "  Vol+ = Continue, Vol- = Go back"
-		if chooseport 30; then
+		if chooseport 50; then
 			break
 		else
 			main_menu
@@ -314,7 +321,8 @@ mods_check() {
 			SMW="${W}dp (${WE}) width"
 		fi
 	fi
-	[ $TMPLT ] && STP="${TMPLT} pill"
+	[ $TMPLT ] && SMTP="${TMPLT} pill"
+	[ $KBH ] && SMKBH="Reduced keyboard bottom height"
 	[ $CLR ] && SMC="${CLR} color"
 	[ $CLR1 ] && SMC1="${CLR1} color"
 	[ $CLR2 ] && SMC2="${CLR2} color"
@@ -324,8 +332,7 @@ mods_check() {
 	[ $H ] && SMH="${HE} height"
 	[ $MIUISM ] && SMMIUISM="MIUI bottom margin fix"
 	[ $NCK ] && SMNCK="NotchKiller"
-
-	ARR="${SMR}:${SMT}:${SMW}:${STP}:${SMC}:${SMC1}:${SMC2}:${SMTRP}:${SMIMRS}:${SMFULL}:${SMH}:${SMMIUISM}:${SMNCK}:"
+	ARR="${SMR}:${SMT}:${SMW}:${SMTP}:${SMKBH}:${SMC}:${SMC1}:${SMC2}:${SMTRP}:${SMIMRS}:${SMFULL}:${SMH}:${SMMIUISM}:${SMNCK}:"
 	func() {
 		[ "$SRR" ] && ui_print "-  $SRR selected  -"
 	}
@@ -333,7 +340,7 @@ mods_check() {
 }
 
 mods_remove() {
-		ARR="${SMR}:${SMT}:${SMW}:${STP}:${SMC}:${SMC1}:${SMC2}:${SMTRP}:${SMIMRS}:${SMFULL}:${SMH}:${SMMIUISM}:${SMNCK}:"
+		ARR="${SMR}:${SMT}:${SMW}:${SMTP}:${SMKBH}:${SMC}:${SMC1}:${SMC2}:${SMTRP}:${SMIMRS}:${SMFULL}:${SMH}:${SMMIUISM}:${SMNCK}:"
 		ui_print "  Select which mod to remove:"
 		ui_print "  "
 		NUM=1
@@ -352,9 +359,10 @@ mods_remove() {
 		eval OPN=\"\$"${ARGVAR}"\"
 		case "${OPN}" in
 			*radius*) unset R SMR ISR;;
-			*thickness*) unset SHPMAN T SMT W SMW TMPLT STP;;
-			*width*) unset SHPMAN T SMT W SMW TMPLT STP;;
-			*pill*) unset SHPMAN T SMT W SMW TMPLT STP;;
+			*thickness*) unset SHPMAN T SMT W SMW TMPLT SMTP;;
+			*width*) unset SHPMAN T SMT W SMW TMPLT SMTP;;
+			*keyboard*) unset KBH SMKBH;;
+			*pill*) unset SHPMAN T SMT W SMW TMPLT SMTP;;
 			*color*) unset CLR CLR1 CLR2 DLCR DLTN SMC SMC1 SMC2;;
 			*transparency*) unset TRP SMTRP;;
 			*Immersive*) unset IMRS SMIMRS;;
@@ -370,7 +378,7 @@ mods_remove() {
 mods_reset() {
 	sp
 	ui_print "  Resetting..." 
-	unset MLOOP R SMR SHPMAN T SMT W SMW TMPLT STP CLR CLR1 CLR2 SMC SMC1 SMC2 TRP SMTRP IMRS SMIMRS FULL SMFULL H SMH MIUISM SMMIUISM NCK SMNCK
+	unset MLOOP R SMR SHPMAN T SMT W SMW TMPLT SMTP KBH SMKBH CLR CLR1 CLR2 SMC SMC1 SMC2 TRP SMTRP IMRS SMIMRS FULL SMFULL H SMH MIUISM SMMIUISM NCK SMNCK
 }
 
 ############
@@ -397,7 +405,8 @@ main_urm() {
 	ui_print "  1. Small (Almost square)"
 	ui_print "  2. Medium"
 	ui_print "  3. Large"
-	ui_print "  4. BACK"
+	ui_print "  "
+	ui_print "  4. Back (continue)"
 	pick_opt multi 4
 	case $OPT in
 		1) R=2; RE=Small;;
@@ -408,25 +417,35 @@ main_urm() {
 	if [ -z $MIUI ] && [ $R ]; then
 		unset ISR
 		sp
+		ui_print "  Applying radius to all icon shapes"
 		ui_print "  PLEASE READ!"
 		ui_print "  NOT ALL ROM SUPPORT THIS!"
+		ui_print "  Take a screenshot if you want"
 		ui_print "  "
-		ui_print "  Apply radius to all icon shapes..."
 		ui_print "  You can try this option and check your iconshapes after"
 		ui_print "  "
 		ui_print "  Workaround if iconshapes are missing:"
+		ui_print "  1st solution:"
+		ui_print "  Select NO on this option"
+		ui_print "  and see if iconshapes are overriding UIRadius"
+		ui_print "  "
+		ui_print "  2nd solution:"
 		ui_print "  1. Disable this module in magisk manager"
 		ui_print "  2. Reboot"
-		ui_print "  3. Set up your iconshapes, font, accent, etc"
-		ui_print "  4. Install this module again"
+		ui_print "  3. Set up your iconshapes, font, accent, etc and apply it"
+		ui_print "  4. Install this module (you can restore other selected mods)"
+		ui_print "	5. Pick radius and select YES on this option"
+		ui_print "  Do not change styles to default, or you have to do this again"
 		ui_print "  "
 		ui_print "  If it still doesn't work:"
-		ui_print "  Report to Support Group on telegram @tzlounge"
-		ui_print "  I'll guide you to report to your rom maintainer"
+		ui_print "  Type #iconshapefix on telegram Support Group (@tzlounge)"
+		ui_print "  It will guide you to report to your rom maintainer"
 		ui_print "  "
 		ui_print "  (Tested fine on RevengeOS A11)"
 		ui_print "  (Should've worked on Ressurection Remix)"
 		ui_print "  (Workaround successfull on crDroid A11)"
+		ui_print "  "
+		ui_print "  Apply radius to all icon shapes?"
 		pick_opt yesno ISR
 	fi
 }
@@ -480,6 +499,7 @@ pgm_zip() {
 		*ios*) T=2.5; W=160;;
 		*full*) FULL=true;;
 		*imrs*) IMRS=true;;
+		*kbh*) KBH=true;;
 		*dflt*) CLR1=$DFBK; CLR2=$DFWT;;
 		*amty*) [ $CLR ] && CLR2=$AMTY || CLR1=$AMTY;;
 		*aqmr*) [ $CLR ] && CLR2=$AQMR || CLR1=$AQMR;;
@@ -521,8 +541,10 @@ main_pgm() {
 	ui_print "  2. Change color"
 	ui_print "  3. Change transparency"
 	ui_print "  4. Enable immersive or fullscreen mode"
-	ui_print "  5. BACK"
-	pick_opt multi 5
+	ui_print "  5. Reduce keyboard bottom height"
+	ui_print "  "
+	ui_print "  6. Back (continue)"
+	pick_opt multi 6
 	if [ $OPT = 1 ] && [ -z "$FULL" ]; then
 		main_shape
 		main_pgm
@@ -550,6 +572,10 @@ main_pgm() {
 		main_mode
 		main_pgm
 	fi
+	if [ $OPT = 5 ]; then
+		main_kbh
+		main_pgm
+	fi
 }
 
 fs_picked() {
@@ -560,7 +586,7 @@ fs_picked() {
 	ui_print "  and continue?"
 	ui_print "  Vol+ = Yes, Vol- = No"
 	sp
-	if chooseport 30; then
+	if chooseport 50; then
 		ui_print "-  Fullscreen unselected  -"
 		sp
 		unset FULL MLOOP
@@ -582,7 +608,8 @@ main_shape() {
 	ui_print "  3. OxygenOS Pill"
 	ui_print "  4. MIUI Pill"
 	ui_print "  5. IOS Pill"
-	ui_print "  6. BACK"
+	ui_print "  "
+	ui_print "  6. Back (continue)"
 	pick_opt multi 6
 	[ $OPT = 1 ] && shape_manual && SHPMAN=true && unset TMPLT
 	if [ -z $SHPMAN ]; then
@@ -662,7 +689,8 @@ main_color() {
 	ui_print "  ################"
 	color_list
 	ui_print "  16. DualColor (choose twice)"
-	ui_print "  17. BACK"
+	ui_print "  "
+	ui_print "  17. Back (continue)"
 	pick_opt multi 17
 	[ $OPT -ne 17 ] && color_pick
 	[ $CLR ] && ui_print "-  ${CLR} selected  -"
@@ -804,7 +832,8 @@ main_transparency() {
 	ui_print "  7. 70%"
 	ui_print "  8. 80%"
 	ui_print "  9. 90%"
-	ui_print "  10. BACK"
+	ui_print "  "
+	ui_print "  10. Back (continue)"
 	pick_opt multi 10
 	if [ $OPT -ne 10 ]; then
 		case $OPT in
@@ -831,7 +860,8 @@ main_mode() {
 	ui_print "  "
 	ui_print "  1. Immersive mode"
 	ui_print "  2. Fullscreen mode"
-	ui_print "  3. Back"
+	ui_print "  "
+	ui_print "  3. Back (continue)"
 	pick_opt multi 3
 	if [ $OPT = 1 ] && [ $OOS ]; then
 		sp
@@ -839,11 +869,19 @@ main_mode() {
 		pick_opt back
 	fi
 	case $OPT in
-	1) IMRS=true; AMODE=Immersive;;
-	2) FULL=true; AMODE=Fullscreen;;
+		1) IMRS=true; AMODE=Immersive;;
+		2) FULL=true; AMODE=Fullscreen;;
 	esac
 	[ $OPT -ne 3 ] && ui_print "-  ${AMODE} mode selected  -"
 	[ $IMRS ] || [ $FULL ] && MLOOP=true
+}
+
+main_kbh() {
+	ui_print "  Do you want to reduce keyboard bottom height?"
+	ui_print "  NOTICE: Height are based on pill thickness"
+	sp
+	pick_opt yesno KBH
+	[ $KBH ] && MLOOP=true
 }
 
 pgm_script() {
@@ -852,20 +890,19 @@ pgm_script() {
 		set_dir Shape
 		DAPK=${PREFIX}${INFIX}
 		FAPK=${PREFIX}${INFIX}${SVRLY}
-		[ $T = 1.85 ] && T2=7 && T3=19
-		[ "$( echo "$T >= 2.5" | bc )" = 1 ] && T2=9 && T3=24
-		if [ $T3 ]; then
-			TPLUS=true
-			sed -i "s|<val2>|$T2|" ${VALDIR}/dimens.xml
-		else
-			sed -i "4d" ${VALDIR}/dimens.xml
-		fi
+		case $T in
+			1) T2=6; T3=16;;
+			*85) T2=7; T3=19;;
+			2*) T2=9; T3=24;;
+			3) T2=10; T3=26;;
+		esac
+		sed -i "s|<val2>|$T2|" ${VALDIR}/dimens.xml
 		sed -i "s|<val>|$T|" ${VALDIR}/dimens.xml
 		sed -i "s|<val3>|$W|" ${VALDIR}/dimens.xml
 		[ $LAND ] && cp_ch -r ${VALDIR}/dimens.xml ${OVDIR}/res/values-land
 		build_apk Shape
 	fi
-
+	
 	if [ $CLR ] || [ $TRP ] || [ $DLCR ]; then
 		set_dir Color
 		INFIX=Color
@@ -923,54 +960,61 @@ pgm_script() {
 		FAPK=${PREFIX}${SCNFG}${SVRLY}
 	fi
 
-	if [ -z $MIUI ]; then
-		DEF2=16
-		DEF3=32
-	else
-		DEF2=16
-		if [ $FULL ] || [ $TPLUS ] && [ -z $IMRS ]; then
-			sed -i "5,6d" ${VALDIR}/dimens.xml
-		fi
-	fi
-
+	DEF1=16
+	DEF2=48
+	DEF3=32
+	
 	if [ $FULL ]; then
-		SVAL=0
+		SVAL1=0
 		SVAL2=0
 		SVAL3=20
 	fi
 
 	if [ $IMRS ]; then
 		if [ -z $MIUI ]; then
-			SVAL=0
-			[ $T3 ] && SVAL2=$T3 || SVAL2=$DEF2
-			SVAL3=$DEF3
+			SVAL1=0
+			if [ $T3 ]; then
+				[ $KBH ] && SVAL2=$T3
+			else
+				[ $KBH ] && SVAL2=$DEF1 || SVAL2=$DEF2
+			fi
+			[ $T3 ] && SVAL3=$(($T3+16)) || SVAL3=$DEF3
 		else
-			SVAL=0.1
-			[ $TPLUS ] && SVAL2=$T3 || SVAL2=$DEF2
+			SVAL1=0.1
+			[ $T3 ] && SVAL2=$T3
 		fi
-	elif [ $TPLUS ]; then
-		SVAL=$T3
-		SVAL2=$T3
+	elif [ $T3 ]; then
+		SVAL1=$T3
+		[ $MIUI ] || [ $KBH ] && SVAL2=$T3 || SVAL2=$DEF2
 		SVAL3=$(($T3+16))
+	elif [ $KBH ]; then
+		SVAL1=$DEF1
+		SVAL2=$DEF1
+		SVAL3=$DEF3
 	fi
-
-	if [ $SVAL ]; then
-		sed -i "s|<val>|$SVAL|" ${VALDIR}/dimens.xml
+	
+	if [ $MIUI ]; then
+		if [ $FULL ] || [ -z $SVAL2 ]; then
+			sed -i "5,6d" ${VALDIR}/dimens.xml
+		fi
+	fi
+	
+	if [ $SVAL1 ]; then
+		sed -i "s|<val>|$SVAL1|" ${VALDIR}/dimens.xml
 		sed -i "s|<val2>|$SVAL2|" ${VALDIR}/dimens.xml
 		if [ -z $MIUI ]; then
 			sed -i "s|<val3>|$SVAL3|" ${VALDIR}/dimens.xml
 			sed -i "s|<vapi>|$API|" ${OVDIR}/AndroidManifest.xml
 			sed -i "s|<vcde>|$ACODE|" ${OVDIR}/AndroidManifest.xml
 			[ $API -ge 30 ] && ARR=":" || ARR=":NarrowBack:WideBack:ExtraWideBack:"
-			#ARR=":NarrowBack:WideBack:ExtraWideBack:"
 			func() {
 				DAPK=${PREFIX}${SRR}
 				FAPK=${PREFIX}${SVRLY}${SRR}
-				[ -z $SSR ] && SVAL=24 && CHNG="<valc>" && WTH="$SVAL" && SVALS="gestural" && CHNG1="<vals>" && WTH1="$SVALS"
+				[ -z $SSR ] && SVAL1=24 && CHNG="<valc>" && WTH="$SVAL1" && SVALS="gestural" && CHNG1="<vals>" && WTH1="$SVALS"
 				case $SRR in
-				Narrow*) SVAL1=18; CHNG="$SVAL"; WTH="$SVAL1"; SVALS1="gestural_narrow_back"; CHNG1="$SVALS"; WTH1="$SVALS1";;
-				Wide*) SVAL2=32; CHNG="$SVAL1"; WTH="$SVAL2"; SVALS2="gestural_wide_back"; CHNG1="$SVALS1"; WTH1="$SVALS2";;
-				Extra*) SVAL3=40; CHNG="$SVAL2"; WTH="$SVAL3"; SVALS3="gestural_extra_wide_back"; CHNG1="$SVALS2"; WTH1="$SVALS3";;
+					Narrow*) SVAL1=18; CHNG="$SVAL1"; WTH="$SVAL1"; SVALS1="gestural_narrow_back"; CHNG1="$SVALS"; WTH1="$SVALS1";;
+					Wide*) SVAL2=32; CHNG="$SVAL1"; WTH="$SVAL2"; SVALS2="gestural_wide_back"; CHNG1="$SVALS1"; WTH1="$SVALS2";;
+					Extra*) SVAL3=40; CHNG="$SVAL2"; WTH="$SVAL3"; SVALS3="gestural_extra_wide_back"; CHNG1="$SVALS2"; WTH1="$SVALS3";;
 				esac
 				sed -i "s|$CHNG|$WTH|" ${VALDIR}/config.xml
 				sed -i "s|$CHNG1|$WTH1|" ${OVDIR}/AndroidManifest.xml
@@ -980,10 +1024,11 @@ pgm_script() {
 		else
 			build_apk Config
 			ui_print "  Copying special files for MIUI..."
-			case $SVAL in
+			case $SVAL1 in
 				0) GLO=FULL;;
-				"0.1") GLO=IMRS;;
-				24) GLO=TPLUS;;
+				*1) GLO=IMRS;;
+				24) GLO=24;;
+				26) GLO=26;;
 			esac
 			mv ${MODDIR}/MIUI/*$GLO.apk ${MODDIR}/MIUI/GestureLineOverlay.apk
 			cp_ch -r ${MODDIR}/MIUI/*Overlay.apk ${MODPATH}/system/vendor/overlay
@@ -1005,7 +1050,7 @@ imrs_notice() {
 		ui_print "  - Done"
 		ui_print "  "
 		ui_print "  Press any vol to continue"
-		chooseport 30
+		chooseport 50
 	fi
 }
 
@@ -1041,7 +1086,8 @@ main_sbm() {
 	ui_print "  1. Medium"
 	ui_print "  2. Large"
 	ui_print "  3. XLarge"
-	ui_print "  4. BACK"
+	ui_print "  "
+	ui_print "  4. Back (continue)"
 	pick_opt multi 4
 	case $OPT in
 		1) H=34; HE=Medium;;
@@ -1119,6 +1165,13 @@ sbm_zip
 # User input #
 ##############
 if [ -z $R ] || [ -z $T ] && [ -z $W ] || [ -z $CLR1 ] || [ -z $CLR2 ] || [ -z $TRP ] || [ -z $IMRS ] || [ -z $FULL ] || [ -z $H ] || [ -z $MIUISM ] || [ -z $NCK ] ; then
+	sp
+	sp
+	sp
+	sp
+	sp
+	sp
+	sp
 	ui_print "  Welcome to..."
 	ui_print "    ___     _  _ __ ____ _  _  __  __      _  _  __ ____ "
 	ui_print "   / __)___/ )( (  / ___/ )( \\/ _\\(  )    ( \\/ )/  (    \\"
@@ -1148,7 +1201,7 @@ if [ $R ]; then
 	urm_script
 fi
 
-if [ $T ] && [ $W ] || [ $CLR ] || [ $DLCR ] || [ $TRP ] || [ $IMRS ] || [ $FULL ]; then
+if [ $T ] && [ $W ] || [ $KBH ] || [ $CLR ] || [ $DLCR ] || [ $TRP ] || [ $IMRS ] || [ $FULL ]; then
 	MODSEL=PGM
 	MODDIR=${MODPATH}/mods/${MODSEL}
 	PREFIX="G-PillGesture"
@@ -1173,7 +1226,7 @@ fi
 #############
 # Finishing #
 #############
-ARR="R:RE:ISR:SHPMAN:TE:T:WE:W:LAND:TMPLT:CLR:CLR1:CLR2:DLCR:DLTN:TRP:STRP:IMRS:FULL:H:HE:MIUISM:NCK:"
+ARR="R:RE:ISR:SHPMAN:TE:T:WE:W:LAND:TMPLT:KBH:CLR:CLR1:CLR2:DLCR:DLTN:TRP:STRP:IMRS:FULL:H:HE:MIUISM:NCK:"
 func() {
 	if [ $SRR ]; then
 		eval i=\"\$$SRR\"
