@@ -308,17 +308,22 @@ main_loop() {
 mods_check() {
 	sp
 	ui_print "  Mod(s) selected:"
-	[ $R ] && SMR="${RE} radius"
+	ARR="SMR:SMT:SMW:SMTP:SMKBH:SMC:SMC1:SMC2:SMTRP:SMIMRS:SMFULL:SMH:SMMIUISM:SMNCK:"
+	func() {
+		[ "$SRR" ] &&  unset $OPN
+	}
+	array func
+	[ $R ] && SMR="${RE} UI radius"
 	if [ $SHPMAN ]; then
 		if [ -z $TE ]; then
 			SMT="${T}dp thickness"
 		else
-			SMT="${T}dp (${TE}) thickness"
+			SMT="${T}dp (${TE}) pill thickness"
 		fi
 		if [ -z $WE ]; then
 			SMW="${W}dp width"
 		else
-			SMW="${W}dp (${WE}) width"
+			SMW="${W}dp (${WE}) pill width"
 		fi
 	fi
 	[ $TMPLT ] && SMTP="${TMPLT} pill"
@@ -329,7 +334,7 @@ mods_check() {
 	[ $TRP ] && SMTRP="${STRP} transparency"
 	[ $IMRS ] && SMIMRS="Immersive"
 	[ $FULL ] && SMFULL="Fullscreen"
-	[ $H ] && SMH="${HE} height"
+	[ $H ] && SMH="${HE} statusbar height"
 	[ $MIUISM ] && SMMIUISM="MIUI bottom margin fix"
 	[ $NCK ] && SMNCK="NotchKiller"
 	ARR="${SMR}:${SMT}:${SMW}:${SMTP}:${SMKBH}:${SMC}:${SMC1}:${SMC2}:${SMTRP}:${SMIMRS}:${SMFULL}:${SMH}:${SMMIUISM}:${SMNCK}:"
@@ -347,31 +352,35 @@ mods_remove() {
 		func() {
 			if [ "$SRR" ]; then
 				ui_print "  ${NUM}. ${SRR}"
-				OPR=MD${NUM}=\"${SRR}\"
-				eval $OPR
+				i=MD${NUM}=\"${SRR}\"
+				eval $i
 				NUM=$((NUM+1))
 			fi
 		}
 		array func
-		ui_print "  ${NUM}. BACK"
+		ui_print "  "
+		ui_print "  ${NUM}. Back (Continue)"
 		pick_opt multi $NUM
-		ARGVAR=MD${OPT}
-		eval OPN=\"\$"${ARGVAR}"\"
-		case "${OPN}" in
-			*radius*) unset R SMR ISR;;
-			*thickness*) unset SHPMAN T SMT W SMW TMPLT SMTP;;
-			*width*) unset SHPMAN T SMT W SMW TMPLT SMTP;;
-			*keyboard*) unset KBH SMKBH;;
-			*pill*) unset SHPMAN T SMT W SMW TMPLT SMTP;;
-			*color*) unset CLR CLR1 CLR2 DLCR DLTN SMC SMC1 SMC2;;
-			*transparency*) unset TRP SMTRP;;
-			*Immersive*) unset IMRS SMIMRS;;
-			*Fullscreen*) unset FULL SMFULL;;
-			*height*) unset H SMH;;
-			*margin*) unset MIUISM SMMIUISM;;
-			*NotchKiller*) unset NCK SMNCK;;
-		esac
-		[ "$OPN" ] && ui_print "-  ${OPN} removed  -"
+		i=MD${OPT}
+		eval OPN=\"\$"${i}"\"
+		if [ $OPT != $NUM ]; then
+			case "${OPN}" in
+				*radius*) unset R SMR ISR;;
+				*thickness*) unset SHPMAN T SMT W SMW TMPLT SMTP;;
+				*width*) unset SHPMAN T SMT W SMW TMPLT SMTP;;
+				*keyboard*) unset KBH SMKBH;;
+				*pill*) unset SHPMAN T SMT W SMW TMPLT SMTP;;
+				*color*) unset CLR CLR1 CLR2 DLCR DLTN SMC SMC1 SMC2;;
+				*transparency*) unset TRP SMTRP;;
+				*Immersive*) unset IMRS SMIMRS;;
+				*Fullscreen*) unset FULL SMFULL;;
+				*height*) unset H SMH;;
+				*margin*) unset MIUISM SMMIUISM;;
+				*NotchKiller*) unset NCK SMNCK;;
+			esac
+		fi
+		[ "$OPN" ] && [ $OPT != $NUM ] && ui_print "-  ${OPN} removed  -"
+		unset OPN
 		[ $OPT = $NUM ] || mods_remove
 }
 
@@ -611,16 +620,18 @@ main_shape() {
 	ui_print "  "
 	ui_print "  6. Back (continue)"
 	pick_opt multi 6
-	[ $OPT = 1 ] && shape_manual && SHPMAN=true && unset TMPLT
-	if [ -z $SHPMAN ]; then
+	if [ $OPT = 1 ]; then
+		shape_manual && SHPMAN=true && unset TMPLT
+	else
+		[ $OPT -ne 6 ] && unset SHPMAN TE WE
 		case $OPT in
 			2) T=1; W=72; TMPLT=AOSP;;
 			3) T=1; W=137; TMPLT=OxygenOS;;
 			4) T=1.85; W=145; TMPLT=MIUI;;
 			5) T=2.5; W=160; TMPLT=IOS;;
 		esac
-		[ $TMPLT ] && ui_print "-  ${TMPLT} Pill selected  -"
 	fi
+	[ $TMPLT ] && ui_print "-  ${TMPLT} pill selected  -"
 	if [ $W ]; then
 		sp
 		ui_print "  Apply width to landscape mode too?"
@@ -974,7 +985,7 @@ pgm_script() {
 		if [ -z $MIUI ]; then
 			SVAL1=0
 			if [ $T3 ]; then
-				[ $KBH ] && SVAL2=$T3
+				[ $KBH ] && SVAL2=$T3 || SVAL2=$DEF2
 			else
 				[ $KBH ] && SVAL2=$DEF1 || SVAL2=$DEF2
 			fi

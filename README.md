@@ -150,12 +150,13 @@ NOT ALL ROM SUPPORT THIS!
 
 You can try this option and check your iconshapes after
 
-Workaround if iconshapes are missing:
-1st solution:
+Workarounds if iconshapes are missing
+
+1st solution
 Select NO on this option
 and see if iconshapes are overriding UIRadius
 
-2nd solution:
+2nd solution
 1. Disable this module in magisk manager
 2. Reboot
 3. Set up your iconshapes, font, accent, etc and apply it
@@ -163,7 +164,7 @@ and see if iconshapes are overriding UIRadius
 5. Pick radius and select YES on this option
 Do not change styles to default, or you have to do this again
 
-If it still doesn't work:
+If it still doesn't work
 Type #iconshapefix on telegram Support Group (@tzlounge)
 It will guide you to report to your rom maintainer
 
@@ -181,11 +182,15 @@ It will guide you to report to your rom maintainer
 - <a href="https://t.me/tzlounge">Support Group</a>.
 
 ## Changelog
+### v3.0.2
+  - Fixed: random removed selection bug;
+  - Fixed: immersive issues.
+
 ### v3.0.1
   - Move "keyboard bottom height" option to a single mod;
   - Increase time on selection;
   - Nicer gaps;
-  - Reduced confusion on installing;
+  - Reduced confusion on installing.
 
 ### v3.0 (changelogs also comes from my older PGM module)
   - Updated: MMT-Ex Template;
