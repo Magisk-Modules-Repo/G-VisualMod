@@ -1010,11 +1010,11 @@ pgm_script() {
 			func() {
 				DAPK=${PREFIX}${SRR}
 				FAPK=${PREFIX}${SVRLY}${SRR}
-				[ -z $SSR ] && SVAL1=24 && CHNG="<valc>" && WTH="$SVAL1" && SVALS="gestural" && CHNG1="<vals>" && WTH1="$SVALS"
+				[ -z $SSR ] && SVAL1=24 && CHNG="<valc>" && WTH="$SVAL1" && SVALS1="gestural" && CHNG1="<vals>" && WTH1="$SVALS1"
 				case $SRR in
-					Narrow*) SVAL1=18; CHNG="$SVAL1"; WTH="$SVAL1"; SVALS1="gestural_narrow_back"; CHNG1="$SVALS"; WTH1="$SVALS1";;
-					Wide*) SVAL2=32; CHNG="$SVAL1"; WTH="$SVAL2"; SVALS2="gestural_wide_back"; CHNG1="$SVALS1"; WTH1="$SVALS2";;
-					Extra*) SVAL3=40; CHNG="$SVAL2"; WTH="$SVAL3"; SVALS3="gestural_extra_wide_back"; CHNG1="$SVALS2"; WTH1="$SVALS3";;
+					Narrow*) SVAL2=18; CHNG="$SVAL1"; WTH="$SVAL2"; SVALS2="gestural_narrow_back"; CHNG1="$SVALS1"; WTH1="$SVALS2";;
+					Wide*) SVAL3=32; CHNG="$SVAL2"; WTH="$SVAL3"; SVALS3="gestural_wide_back"; CHNG1="$SVALS2"; WTH1="$SVALS3";;
+					Extra*) SVAL4=40; CHNG="$SVAL3"; WTH="$SVAL4"; SVALS4="gestural_extra_wide_back"; CHNG1="$SVALS3"; WTH1="$SVALS4";;
 				esac
 				sed -i "s|$CHNG|$WTH|" ${VALDIR}/config.xml
 				sed -i "s|$CHNG1|$WTH1|" ${OVDIR}/AndroidManifest.xml
