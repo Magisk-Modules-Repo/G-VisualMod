@@ -955,7 +955,7 @@ pgm_script() {
 		build_apk "Pill Shape"
 	fi
 	
-	if [ $CLR ] || [ $CLR1 ] && [ $CLR2 ] || [ $TRP ] || [ $DLCR ]; then
+	if [ $CLR1 ] && [ $CLR2 ] || [ $CLR ] || [ $TRP ] || [ $DLCR ]; then
 		set_dir Color
 		INFIX=Color
 		DAPK=${PREFIX}${INFIX}
