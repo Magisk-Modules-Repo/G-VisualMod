@@ -12,12 +12,14 @@ sp() {
 pick_opt() {
 	if [ $1 = multi ]; then
 		ui_print "  "
-		ui_print "  Vol [+] = Next, Vol [-] = Select"
+		ui_print "  Vol [+] = Next"
+		ui_print "  Vol [-] = Select"
 		ui_print "  Select:"
-		sp
+		ui_print "  "
 		OPT=1
 		while true; do
 			ui_print "  $OPT"
+			ui_print "  "
 			if chooseport 50; then
 				OPT=$((OPT + 1))
 			else 
@@ -29,6 +31,7 @@ pick_opt() {
 	elif [ $1 = back ]; then
 		ui_print "  "
 		ui_print "  Press any vol button to go back"
+		ui_print "  "
 		if chooseport 50; then
 			eval $2
 		else 
@@ -36,9 +39,10 @@ pick_opt() {
 		fi
 	elif [ $1 = yesno ]; then
 		ui_print "  "
-		ui_print "  Vol [+] = Yes, Vol [-] = No"
+		ui_print "  Vol [+] = Yes"
+		ui_print "  Vol [-] = No"
 		ui_print "  Select:"
-		sp
+		ui_print "  "
 		if chooseport 50; then
 			ui_print "-  Okay, will do  -"
 			eval $2=true
@@ -81,7 +85,7 @@ build_apk() {
 	else
 		abort "  The overlay was not copied, please send logs to the developer."
 	fi
-	sp
+	ui_print "  "
 	ui_print "  ${1} overlay created!"
 }
 
@@ -138,6 +142,7 @@ older_install() {
 		esac
 		mods_check
 		ui_print "  Press any vol button to go to main menu"
+		ui_print "  "
 		chooseport 50
 	fi
 }
@@ -200,6 +205,7 @@ incompatibility_check() {
 		ui_print "  UI Radius mod not supported!"
 		ui_print "  "
 		ui_print "  Press any vol button to continue"
+		ui_print "  "
 		chooseport 50
 	fi
 	if [ $OOS ]; then
@@ -208,6 +214,7 @@ incompatibility_check() {
 		ui_print "  Immersive mode and Pill transparency not supported!"
 		ui_print "  "
 		ui_print "  Press any vol button to continue"
+		ui_print "  "
 		chooseport 50
 	fi
 
@@ -289,6 +296,7 @@ main_menu() {
 		mods_reset
 		main_menu
 	fi
+	imrs_notice
 }
 
 main_loop() {
@@ -296,7 +304,9 @@ main_loop() {
 		mods_check
 		sp
 		ui_print "  Continue or go back?"
-		ui_print "  Vol+ = Continue, Vol- = Go back"
+		ui_print "  Vol [+] = Continue"
+		ui_print "  Vol [-] = Go back"
+		ui_print "  "
 		if chooseport 50; then
 			break
 		else
@@ -332,8 +342,8 @@ mods_check() {
 	[ $CLR1 ] && SMC1="${CLR1} color"
 	[ $CLR2 ] && SMC2="${CLR2} color"
 	[ $TRP ] && SMTRP="${STRP} transparency"
-	[ $IMRS ] && SMIMRS="Immersive"
-	[ $FULL ] && SMFULL="Fullscreen"
+	[ $IMRS ] && SMIMRS="Immersive mode"
+	[ $FULL ] && SMFULL="Fullscreen mode"
 	[ $H ] && SMH="${HE} statusbar height"
 	[ $MIUISM ] && SMMIUISM="MIUI bottom margin fix"
 	[ $NCK ] && SMNCK="NotchKiller"
@@ -469,7 +479,7 @@ urm_script() {
 		sed -i "s|<val>|$R|" ${VALDIR}/${SRR}.xml
 	}
 	array func
-	build_apk UIRadiusAndroid
+	build_apk "UIRadius Android"
 
 	INFIX=SystemUI
 	set_dir SystemUI
@@ -477,7 +487,7 @@ urm_script() {
 	FAPK=${PREFIX}${INFIX}${SVRLY}
 	sed -i "s|<val>|$R|" ${VALDIR}/dimens.xml
 	[ $API -ge 29 ] && find ${DRWDIR} ! -name 'rounded_ripple.xml' -type f -exec rm -f {} +
-	build_apk UIRadiusSystemUI
+	build_apk "UIRadius SystemUI"
 	
 	if [ $ISR ]; then
 		PREFIX=IconShape
@@ -488,7 +498,7 @@ urm_script() {
 			set_dir "IconShape/${SRR}"
 			sed -i "s|<vapi>|$API|" ${OVDIR}/AndroidManifest.xml
 			sed -i "s|<vcde>|$ACODE|" ${OVDIR}/AndroidManifest.xml
-			build_apk ${PREFIX}${SRR}
+			build_apk "${PREFIX} ${SRR}"
 			[ -d /system/product/overlay/${DAPK} ] || rm -rf ${STEPDIR:?}/${DAPK}
 		}
 		array func
@@ -593,8 +603,9 @@ fs_picked() {
 	ui_print "  or"
 	ui_print "  Do you want to unselect fullscreen mode"
 	ui_print "  and continue?"
-	ui_print "  Vol+ = Yes, Vol- = No"
-	sp
+	ui_print "  Vol [+] = Yes"
+	ui_print "  Vol [-] = No"
+	ui_print "  "
 	if chooseport 50; then
 		ui_print "-  Fullscreen unselected  -"
 		sp
@@ -721,8 +732,12 @@ main_color() {
 		
 		CLRC="dark theme"
 		color_list
-		ui_print "  16. DefaultWhite"
-		pick_opt multi 16
+		if [ $CLR = $DFBK ]; then 
+			pick_opt multi 15
+		else
+			ui_print "  16. DefaultWhite"
+			pick_opt multi 16
+		fi
 		color_pick
 		[ $OPT = 16 ] && CLR=$DFWT
 		CLR2=$CLR
@@ -765,8 +780,6 @@ color_list () {
 
 color_pick() {
 	case $OPT in
-		1) CLR=$DFBK;;
-		1) CLR=$DFWT;;
 		1) CLR=$AMTY;;
 		2) CLR=$AQMR;;
 		3) CLR=$CRBN;;
@@ -895,6 +908,34 @@ main_kbh() {
 	[ $KBH ] && MLOOP=true
 }
 
+imrs_notice() {
+	if [ $IMRS ] && [ -z $CLR ] || [ $IMRS ] && [ -z $CLR ] && [ -z $CLR1 ] && [ -z $CLR2 ]; then
+		sp
+		ui_print "  NOTICE on immersive mode only!"
+		ui_print "  There is a bug on dark mode coloring which is"
+		ui_print "  White pill on a light theme on some apps"
+		ui_print "  "
+		ui_print "  To fix this, you have to change pill color"
+		ui_print "  to something other than white and black"
+		ui_print "  or..."
+		ui_print "  You can proceed"
+		ui_print "  "
+		ui_print "  Pick method:"
+		ui_print "  "
+		ui_print "  Vol [+] = Change pill color"
+		ui_print "  Vol [-] = Proceed"
+		ui_print "  Select:"
+		ui_print "  "
+		if chooseport 50; then
+			main_color
+			imrs_notice
+		else 
+			:
+		fi
+		sp
+	fi
+}
+
 pgm_script() {
 	if [ $T ] && [ $W ]; then
 		INFIX=Shape
@@ -911,10 +952,10 @@ pgm_script() {
 		sed -i "s|<val>|$T|" ${VALDIR}/dimens.xml
 		sed -i "s|<val3>|$W|" ${VALDIR}/dimens.xml
 		[ $LAND ] && cp_ch -r ${VALDIR}/dimens.xml ${OVDIR}/res/values-land
-		build_apk Shape
+		build_apk "Pill Shape"
 	fi
 	
-	if [ $CLR ] || [ $TRP ] || [ $DLCR ]; then
+	if [ $CLR ] || [ $CLR1 ] && [ $CLR2 ] || [ $TRP ] || [ $DLCR ]; then
 		set_dir Color
 		INFIX=Color
 		DAPK=${PREFIX}${INFIX}
@@ -943,7 +984,7 @@ pgm_script() {
 			LTRP=$TRP
 			DTRP=$TRP
 		fi
-		
+
 		[ -z $LCLR ] && [ -z $DCLR ] && DLTN=true
 		[ -z $LCLR ] && LCLR="FFFFFF"
 		[ -z $DCLR ] && DCLR="000000"
@@ -954,7 +995,7 @@ pgm_script() {
 			sed -i "s|${SRR}|" ${VALDIR}/colors.xml
 		}
 		array func
-		build_apk Color
+		build_apk "Pill Color"
 	fi
 
 	if [ -z $MIUI ]; then
@@ -983,7 +1024,7 @@ pgm_script() {
 
 	if [ $IMRS ]; then
 		if [ -z $MIUI ]; then
-			SVAL1=0
+			SVAL1=0.1
 			if [ $T3 ]; then
 				[ $KBH ] && SVAL2=$T3 || SVAL2=$DEF2
 			else
@@ -1048,23 +1089,6 @@ pgm_script() {
 	fi
 }
 
-imrs_notice() {
-	if [ -z $CLR ] && [ -z $CLR1 ] && [ -z $CLR2 ] && [ $IMRS ] || [ $CLR1 != $DFBK ] && [ $CLR2 != $DFWT ] && [ $IMRS ]; then
-		sp
-		ui_print "  NOTICE on immersive mode only!"
-		ui_print "  Some rom might shows false color"
-		ui_print "  e.g. white pill on light theme"
-		ui_print "  To fix this:"
-		ui_print "  - Install the module again (restore if needed)"
-		ui_print "  - Change pill color > choose DualColor"
-		ui_print "  - Select DefaultBlack & DefaultWhite"
-		ui_print "  - Done"
-		ui_print "  "
-		ui_print "  Press any vol to continue"
-		chooseport 50
-	fi
-}
-
 ############
 # Main SBM #
 ############
@@ -1117,7 +1141,7 @@ sbm_script() {
 		DAPK=${PREFIX}${INFIX}
 		FAPK=${PREFIX}${INFIX}${SVRLY}
 		sed -i "s|<val>|$H|" ${VALDIR}/dimens.xml
-		build_apk StatusbarHeight
+		build_apk "Statusbar Height"
 	else
 		ui_print "  Copying special files for MIUI..."
 		set_dir HeightMIUI
@@ -1217,7 +1241,6 @@ if [ $T ] && [ $W ] || [ $KBH ] || [ $CLR ] || [ $DLCR ] || [ $TRP ] || [ $IMRS 
 	MODDIR=${MODPATH}/mods/${MODSEL}
 	PREFIX="G-PillGesture"
 	pgm_script
-	imrs_notice
 fi
 
 if [ $H ] || [ $MIUISM ]; then
