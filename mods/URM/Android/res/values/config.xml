@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="config_dialogCornerRadius"><val>dp</dimen>
+	<dimen name="config_buttonCornerRadius"><val>dp</dimen>
+	<dimen name="config_bottomDialogCornerRadius"><val>dp</dimen>
 </resources>

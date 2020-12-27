@@ -101,21 +101,53 @@ pre_install() {
 define_string() {
 	DFBK="DefaultBlack"
 	DFWT="DefaultWhite"
+	
 	AMTY="Amethyst"
 	AQMR="Aquamarine"
 	CRBN="Carbon"
 	CNMN="Cinnamon"
-	GREN="Green"
 	OCEA="Ocean"
 	ORCD="Orchid"
 	PLTT="Palette"
-	PRPL="Purple"
 	SAND="Sand"
 	SPCE="Space"
 	TGRN="Tangerine"
+	
+	CRED="Red"
+	BRWN="Brown"
+	ELYL="Yellow"
+	ORNG="Orange"
+	GREN="Green"
+	CYAN="Cyan"
+	BLUE="Blue"
+	MGNT="Magenta"
+	PRPL="Purple"
+	
+	HTPK="HotPink"
+	CRMS="Crimson"
+	BRMR="BrightMaroon"
+	ROSE="Rose"
+	SLMN="Salmon"
+	CORL="Coral"
+	ORRD="OrangeRed"
+	CCOA="Cocoa"
+	GLDN="Golden"
+	OLVE="Olive"
+	LIME="Lime"
+	SRGR="SpringGreen"
+	TRQS="Turquoise"
+	INDG="Indigo"
+	
 	MIBL="MIUI12"
 	PXBL="PixelBlue"
 	OPRD="OnePlusRed"
+	DSCR="Discord"
+	SPGR="SpotifyGreen"
+	TWTR="TwitterBlue"
+	RZGR="RazerGreen"
+	REDT="Reddit"
+	VNGR="VineGreen"
+	
 	SVRLY="Overlay"
 }
 
@@ -198,24 +230,6 @@ incompatibility_check() {
 		sp
 		ui_print "  Older MIUI detected!"
 		abort "  Only supported on MIUI 12!"
-	fi
-	if [ $MIUI ]; then
-		sp
-		ui_print "  MIUI detected!"
-		ui_print "  UI Radius mod not supported!"
-		ui_print "  "
-		ui_print "  Press any vol button to continue"
-		ui_print "  "
-		chooseport 50
-	fi
-	if [ $OOS ]; then
-		sp
-		ui_print "  OxygenOS detected!"
-		ui_print "  Immersive mode and Pill transparency not supported!"
-		ui_print "  "
-		ui_print "  Press any vol button to continue"
-		ui_print "  "
-		chooseport 50
 	fi
 
 	if [ -d "/product/overlay" ]; then
@@ -320,7 +334,8 @@ mods_check() {
 	ui_print "  Mod(s) selected:"
 	ARR="SMR:SMT:SMW:SMTP:SMKBH:SMC:SMC1:SMC2:SMTRP:SMIMRS:SMFULL:SMH:SMMIUISM:SMNCK:"
 	func() {
-		[ "$SRR" ] &&  unset $OPN
+		eval i=\$${SRR}
+		[ "$i" ] &&  unset ${SRR}
 	}
 	array func
 	[ $R ] && SMR="${RE} UI radius"
@@ -369,7 +384,7 @@ mods_remove() {
 		}
 		array func
 		ui_print "  "
-		ui_print "  ${NUM}. Back (Continue)"
+		ui_print "  ${NUM}. Back (continue)"
 		pick_opt multi $NUM
 		i=MD${OPT}
 		eval OPN=\"\$"${i}"\"
@@ -380,7 +395,7 @@ mods_remove() {
 				*width*) unset SHPMAN T SMT W SMW TMPLT SMTP;;
 				*keyboard*) unset KBH SMKBH;;
 				*pill*) unset SHPMAN T SMT W SMW TMPLT SMTP;;
-				*color*) unset CLR CLR1 CLR2 DLCR DLTN SMC SMC1 SMC2;;
+				*color*) unset CLR CLR1 CLR2 DLCR DLTN SMC SMC1 SMC2 ACCN;;
 				*transparency*) unset TRP SMTRP;;
 				*Immersive*) unset IMRS SMIMRS;;
 				*Fullscreen*) unset FULL SMFULL;;
@@ -421,7 +436,7 @@ main_urm() {
 	ui_print "  ###################"
 	ui_print "  Pick radius"
 	ui_print "  "
-	ui_print "  1. Small (Almost square)"
+	ui_print "  1. Small (almost square)"
 	ui_print "  2. Medium"
 	ui_print "  3. Large"
 	ui_print "  "
@@ -432,8 +447,8 @@ main_urm() {
 		2) R=20; RE=Medium;;
 		3) R=32; RE=Large;;
     esac
-	[ $R ] && ui_print "-  ${RE} radius selected  -" && MLOOP=true
-	if [ -z $MIUI ] && [ $R ]; then
+	[ $OPT -ne 4 ] && [ $R ] && ui_print "-  ${RE} radius selected  -" && MLOOP=true
+	if [ $OPT -ne 4 ] && [ -z $MIUI ] && [ $R ]; then
 		unset ISR
 		sp
 		ui_print "  Applying radius to all icon shapes"
@@ -503,6 +518,8 @@ urm_script() {
 		}
 		array func
 	fi
+	[ -f /system/product/overlay/PixelFrameworksOverlay.apk ] && cp_ch -r ${MODDIR}/PixelFrameworksOverlay.apk ${MODPATH}/system/product/overlay
+	
 }
 
 ############
@@ -520,21 +537,53 @@ pgm_zip() {
 		*imrs*) IMRS=true;;
 		*kbh*) KBH=true;;
 		*dflt*) CLR1=$DFBK; CLR2=$DFWT;;
+		
 		*amty*) [ $CLR ] && CLR2=$AMTY || CLR1=$AMTY;;
 		*aqmr*) [ $CLR ] && CLR2=$AQMR || CLR1=$AQMR;;
 		*crbn*) [ $CLR ] && CLR2=$CRBN || CLR1=$CRBN;;
 		*cnmn*) [ $CLR ] && CLR2=$CNMN || CLR1=$CNMN;;
-		*gren*) [ $CLR ] && CLR2=$GREN || CLR1=$GREN;;
 		*ocea*) [ $CLR ] && CLR2=$OCEA || CLR1=$OCEA;;
 		*orcd*) [ $CLR ] && CLR2=$ORCD || CLR1=$ORCD;;
 		*pltt*) [ $CLR ] && CLR2=$PLTT || CLR1=$PLTT;;
-		*prpl*) [ $CLR ] && CLR2=$PRPL || CLR1=$PRPL;;
 		*sand*) [ $CLR ] && CLR2=$SAND || CLR1=$SAND;;
 		*spce*) [ $CLR ] && CLR2=$SPCE || CLR1=$SPCE;;
 		*tgrn*) [ $CLR ] && CLR2=$TGRN || CLR1=$TGRN;;
+		
+		*cred*) [ $CLR ] && CLR2=$CRED || CLR1=$CRED;;
+		*brwn*) [ $CLR ] && CLR2=$BRWN || CLR1=$BRWN;;
+		*elyl*) [ $CLR ] && CLR2=$ELYL || CLR1=$ELYL;;
+		*orng*) [ $CLR ] && CLR2=$ORNG || CLR1=$ORNG;;
+		*gren*) [ $CLR ] && CLR2=$GREN || CLR1=$GREN;;
+		*cyan*) [ $CLR ] && CLR2=$CYAN || CLR1=$CYAN;;
+		*blue*) [ $CLR ] && CLR2=$BLUE || CLR1=$BLUE;;
+		*mgnt*) [ $CLR ] && CLR2=$MGNT || CLR1=$MGNT;;
+		*prpl*) [ $CLR ] && CLR2=$PRPL || CLR1=$PRPL;;
+		
+		*htpk*) [ $CLR ] && CLR2=$HTPK || CLR1=$HTPK;;
+		*crms*) [ $CLR ] && CLR2=$CRMS || CLR1=$CRMS;;
+		*brmr*) [ $CLR ] && CLR2=$BRMR || CLR1=$BRMR;;
+		*rose*) [ $CLR ] && CLR2=$ROSE || CLR1=$ROSE;;
+		*slmn*) [ $CLR ] && CLR2=$SLMN || CLR1=$SLMN;;
+		*corl*) [ $CLR ] && CLR2=$CORL || CLR1=$CORL;;
+		*orrd*) [ $CLR ] && CLR2=$ORRD || CLR1=$ORRD;;
+		*ccoa*) [ $CLR ] && CLR2=$CCOA || CLR1=$CCOA;;
+		*gldn*) [ $CLR ] && CLR2=$GLDN || CLR1=$GLDN;;
+		*olve*) [ $CLR ] && CLR2=$OLVE || CLR1=$OLVE;;
+		*lime*) [ $CLR ] && CLR2=$LIME || CLR1=$LIME;;
+		*srgr*) [ $CLR ] && CLR2=$SRGR || CLR1=$SRGR;;
+		*trqs*) [ $CLR ] && CLR2=$TRQS || CLR1=$TRQS;;
+		*indg*) [ $CLR ] && CLR2=$INDG || CLR1=$INDG;;
+		
 		*mibl*) [ $CLR ] && CLR2=$MIBL || CLR1=$MIBL;;
 		*pxbl*) [ $CLR ] && CLR2=$PXBL || CLR1=$PXBL;;
 		*oprd*) [ $CLR ] && CLR2=$OPRD || CLR1=$OPRD;;
+		*dscr*) [ $CLR ] && CLR2=$DSCR || CLR1=$DSCR;;
+		*spgr*) [ $CLR ] && CLR2=$SPGR || CLR1=$SPGR;;
+		*twtr*) [ $CLR ] && CLR2=$TWTR || CLR1=$TWTR;;
+		*rzgr*) [ $CLR ] && CLR2=$RZGR || CLR1=$RZGR;;
+		*redt*) [ $CLR ] && CLR2=$REDT || CLR1=$REDT;;
+		*vngr*) [ $CLR ] && CLR2=$VNGR || CLR1=$VNGR;;
+
 		*dt*) DLTN=true;;
 		*10*) TRP=E6; IMRS=true;;
 		*20*) TRP=CC; IMRS=true;;
@@ -592,8 +641,14 @@ main_pgm() {
 		main_pgm
 	fi
 	if [ $OPT = 5 ]; then
-		main_kbh
-		main_pgm
+		if [ $MIUI ]; then
+			sp
+			ui_print "  Keyboard is fine on MIUI"
+			pick_opt back main_pgm
+		else
+			main_kbh
+			main_pgm
+		fi
 	fi
 }
 
@@ -643,7 +698,7 @@ main_shape() {
 		esac
 	fi
 	[ $TMPLT ] && ui_print "-  ${TMPLT} pill selected  -"
-	if [ $W ]; then
+	if [ $OPT -ne 6 ]; then
 		sp
 		ui_print "  Apply width to landscape mode too?"
 		pick_opt yesno LAND
@@ -709,23 +764,25 @@ main_color() {
 	ui_print "  ################"
 	ui_print "  # CHANGE COLOR #"
 	ui_print "  ################"
+	ui_print "  Only Default Accents that has DualTone"
 	color_list
-	ui_print "  16. DualColor (choose twice)"
+	ui_print "  5. DualColor (choose twice)"
 	ui_print "  "
-	ui_print "  17. Back (continue)"
-	pick_opt multi 17
-	[ $OPT -ne 17 ] && color_pick
-	[ $CLR ] && ui_print "-  ${CLR} selected  -"
+	ui_print "  6. Back (continue)"
+	pick_opt multi 6
 	sp
-	if [ $OPT = 16 ]; then
+	if [ $OPT -lt 5 ]; then
+		color_type
+		[ $CLR ] && ui_print "-  ${CLR} selected  -"
+	elif [ $OPT = 5 ]; then
 		DLCR=true
 		DLTN=true
 		CLRC="light theme"
 		color_list
-		ui_print "  16. DefaultBlack"
-		pick_opt multi 16
-		color_pick
-		[ $OPT = 16 ] && CLR=$DFBK
+		ui_print "  5. DefaultBlack"
+		pick_opt multi 5
+		[ $OPT = 5 ] && CLR=$DFBK
+		color_type
 		CLR1=$CLR
 		ui_print "-  ${CLR1} selected  -"
 		sp
@@ -733,19 +790,19 @@ main_color() {
 		CLRC="dark theme"
 		color_list
 		if [ $CLR = $DFBK ]; then 
-			pick_opt multi 15
+			pick_opt multi 4
 		else
-			ui_print "  16. DefaultWhite"
-			pick_opt multi 16
+			ui_print "  5. DefaultWhite"
+			pick_opt multi 5
 		fi
-		color_pick
-		[ $OPT = 16 ] && CLR=$DFWT
+		[ $OPT = 5 ] && CLR=$DFWT
+		color_type
 		CLR2=$CLR
 		ui_print "-  ${CLR2} selected  -"
 		unset CLR
 	fi
 	
-	if [ $OPT -le 12 ] && [ -z $DLTN ]; then
+	if [ $OPT -ne 6 ] && [ $ACCN ] && [ -z $DLTN ]; then
 		sp
 		ui_print "  #############"
 		ui_print "  # DUAL TONE #"
@@ -758,43 +815,158 @@ main_color() {
 	[ $CLR ] && MLOOP=true || [ $DLCR ] && MLOOP=true
 }
 
-color_list () {
-	ui_print "  Pick ${CLRC} color"
-	ui_print "  "
+color_accents () {
 	ui_print "  1. ${AMTY}"
 	ui_print "  2. ${AQMR}"
 	ui_print "  3. ${CRBN}"
 	ui_print "  4. ${CNMN}"
-	ui_print "  5. ${GREN}"
-	ui_print "  6. ${OCEA}"
-	ui_print "  7. ${ORCD}"
-	ui_print "  8. ${PLTT}"
-	ui_print "  9. ${PRPL}"
-	ui_print "  10. ${SAND}"
-	ui_print "  11. ${SPCE}"
-	ui_print "  12. ${TGRN}"
-	ui_print "  13. ${MIBL} (No DualTone)"
-	ui_print "  14. ${PXBL} (No DualTone)"
-	ui_print "  15. ${OPRD} (No DualTone)"
+	ui_print "  5. ${OCEA}"
+	ui_print "  6. ${ORCD}"
+	ui_print "  7. ${PLTT}"
+	ui_print "  8. ${SAND}"
+	ui_print "  9. ${SPCE}"
+	ui_print "  10. ${TGRN}"
+	ui_print "  "
+	ui_print "  11. Back"
 }
 
-color_pick() {
+color_solid () {
+	ui_print "  1. ${CRED}"
+	ui_print "  2. ${BRWN}"
+	ui_print "  3. ${ELYL}"
+	ui_print "  4. ${ORNG}"
+	ui_print "  5. ${GREN}"
+	ui_print "  6. ${CYAN}"
+	ui_print "  7. ${BLUE}"
+	ui_print "  8. ${MGNT}"
+	ui_print "  9. ${PRPL}"
+	ui_print "  "
+	ui_print "  10. Back"
+}
+
+color_root () {
+	ui_print "  1. ${HTPK}"
+	ui_print "  2. ${CRMS}"
+	ui_print "  3. ${BRMR}"
+	ui_print "  4. ${ROSE}"
+	ui_print "  5. ${SLMN}"
+	ui_print "  6. ${CORL}"
+	ui_print "  7. ${ORRD}"
+	ui_print "  8. ${CCOA}"
+	ui_print "  9. ${GLDN}"
+	ui_print "  10. ${OLVE}"
+	ui_print "  11. ${LIME}"
+	ui_print "  12. ${SRGR}"
+	ui_print "  13. ${TRQS}"
+	ui_print "  14. ${INDG}"
+	ui_print "  "
+	ui_print "  15. Back"
+}
+
+color_brand () {
+	ui_print "  1. ${MIBL}"
+	ui_print "  2. ${PXBL}"
+	ui_print "  3. ${OPRD}"
+	ui_print "  4. ${DSCR}"
+	ui_print "  5. ${SPGR}"
+	ui_print "  6. ${TWTR}"
+	ui_print "  7. ${RZGR}"
+	ui_print "  8. ${REDT}"
+	ui_print "  9. ${VNGR}"
+	ui_print "  "
+	ui_print "  10. Back"
+}
+
+accents_pick() {
 	case $OPT in
 		1) CLR=$AMTY;;
 		2) CLR=$AQMR;;
 		3) CLR=$CRBN;;
 		4) CLR=$CNMN;;
+		5) CLR=$OCEA;;
+		6) CLR=$ORCD;;
+		7) CLR=$PLTT;;
+		8) CLR=$SAND;;
+		9) CLR=$SPCE;;
+		10) CLR=$TGRN;;
+	esac
+	[ $CLR ] && ACCN=true
+}
+
+solid_pick() {
+	case $OPT in
+		1) CLR=$CRED;;
+		2) CLR=$BRWN;;
+		3) CLR=$ELYL;;
+		4) CLR=$ORNG;;
 		5) CLR=$GREN;;
-		6) CLR=$OCEA;;
-		7) CLR=$ORCD;;
-		8) CLR=$PLTT;;
+		6) CLR=$CYAN;;
+		7) CLR=$BLUE;;
+		8) CLR=$MGNT;;
 		9) CLR=$PRPL;;
-		10) CLR=$SAND;;
-		11) CLR=$SPCE;;
-		12) CLR=$TGRN;;
-		13) CLR=$MIBL;;
-		14) CLR=$PXBL;;
-		15) CLR=$OPRD;;
+	esac
+}
+
+root_pick() {
+	case $OPT in
+		1) CLR=$HTPK;;
+		2) CLR=$CRMS;;
+		3) CLR=$BRMR;;
+		4) CLR=$ROSE;;
+		5) CLR=$SLMN;;
+		6) CLR=$CORL;;
+		7) CLR=$ORRD;;
+		8) CLR=$CCOA;;
+		9) CLR=$GLDN;;
+		10) CLR=$OLVE;;
+		11) CLR=$LIME;;
+		12) CLR=$SRGR;;
+		13) CLR=$TRQS;;
+		14) CLR=$INDG;;
+	esac
+}
+
+brand_pick() {
+	case $OPT in
+		1) CLR=$MIBL;;
+		2) CLR=$PXBL;;
+		3) CLR=$OPRD;;
+		4) CLR=$DSCR;;
+		5) CLR=$SPGR;;
+		6) CLR=$TWTR;;
+		7) CLR=$RZGR;;
+		8) CLR=$REDT;;
+		9) CLR=$VNGR;;
+	esac
+}
+
+color_list () {
+	ui_print "  Pick ${CLRC} color"
+	ui_print "  "
+	ui_print "  1. Default accents"
+	ui_print "  2. Solid colors"
+	ui_print "  3. Root colors"
+	ui_print "  4. Brand colors"
+}
+
+color_type() {
+	case $OPT in
+		1) ui_print "  Default accents"
+		color_accents
+		pick_opt multi 11
+		accents_pick;;
+		2) ui_print "  Solid colors"
+		color_solid
+		pick_opt multi 10
+		solid_pick;;
+		3) ui_print "  Root colors"
+		color_root
+		pick_opt multi 15
+		root_pick;;
+		4) ui_print "  Brand colors"
+		color_brand
+		pick_opt multi 10
+		brand_pick;;
 	esac
 }
 
@@ -805,17 +977,47 @@ light_color() {
 		"$AQMR") LCLR="1AFFCB";;
 		"$CRBN") LCLR="3DDCFF";;
 		"$CNMN") LCLR="C3A6A2";;
-		"$GREN") LCLR="84C188";;
 		"$OCEA") LCLR="28BDD7";;
 		"$ORCD") LCLR="E68AED";;
 		"$PLTT") LCLR="ffb6d9";;
-		"$PRPL") LCLR="B5A9FC";;
 		"$SAND") LCLR="c8ac94";;
 		"$SPCE") LCLR="99ACCC";;
 		"$TGRN") LCLR="F19D7D";;
+		
+		"$CRED") LCLR="FF0000";;
+		"$BRWN") LCLR="964B00";;
+		"$ELYL") LCLR="FFFF00";;
+		"$ORNG") LCLR="FFA500";;
+		"$GREN") LCLR="84C188";;
+		"$CYAN") LCLR="00FFFF";;
+		"$BLUE") LCLR="0000FF";;
+		"$MGNT") LCLR="FF00FF";;
+		"$PRPL") LCLR="B5A9FC";;
+		
+		"$HTPK") LCLR="FF69B4";;
+		"$CRMS") LCLR="dc143c";;
+		"$BRMR") LCLR="C32148";;
+		"$ROSE") LCLR="FF007F";;
+		"$SLMN") LCLR="FA8072";;
+		"$CORL") LCLR="FF7F50";;
+		"$ORRD") LCLR="FF4500";;
+		"$CCOA") LCLR="D2691E";;
+		"$GLDN") LCLR="FFD700";;
+		"$OLVE") LCLR="808000";;
+		"$LIME") LCLR="BFFF00";;
+		"$SRGR") LCLR="00FF7F";;
+		"$TRQS") LCLR="40E0D0";;
+		"$INDG") LCLR="6f00ff";;
+		
 		"$MIBL") LCLR="0D84FF";;
 		"$PXBL") LCLR="1A73E8";;
 		"$OPRD") LCLR="EB0028";;
+		"$DSCR") LCLR="7289da";;
+		"$SPGR") LCLR="1DB954";;
+		"$TWTR") LCLR="1DA1F2";;
+		"$RZGR") LCLR="00ff00";;
+		"$REDT") LCLR="ff4500";;
+		"$VNGR") LCLR="00b488";;
 	esac
 }
 
@@ -826,17 +1028,47 @@ dark_color() {
 		"$AQMR") DCLR="23847D";;
 		"$CRBN") DCLR="434E58";;
 		"$CNMN") DCLR="AF6050";;
-		"$GREN") DCLR="1B873B";;
 		"$OCEA") DCLR="0C80A7";;
 		"$ORCD") DCLR="C42CC9";;
 		"$PLTT") DCLR="c01668";;
-		"$PRPL") DCLR="725AFF";;
 		"$SAND") DCLR="795548";;
 		"$SPCE") DCLR="47618A";;
 		"$TGRN") DCLR="C85125";;
+
+		"$CRED") DCLR="FF0000";;
+		"$BRWN") DCLR="964B00";;
+		"$ELYL") DCLR="FFFF00";;
+		"$ORNG") DCLR="FFA500";;
+		"$GREN") DCLR="84C188";;
+		"$CYAN") DCLR="00FFFF";;
+		"$BLUE") DCLR="0000FF";;
+		"$MGNT") DCLR="FF00FF";;
+		"$PRPL") DCLR="B5A9FC";;
+		
+		"$HTPK") DCLR="FF69B4";;
+		"$CRMS") DCLR="dc143c";;
+		"$BRMR") DCLR="C32148";;
+		"$ROSE") DCLR="FF007F";;
+		"$SLMN") DCLR="FA8072";;
+		"$CORL") DCLR="FF7F50";;
+		"$ORRD") DCLR="FF4500";;
+		"$CCOA") DCLR="D2691E";;
+		"$GLDN") DCLR="FFD700";;
+		"$OLVE") DCLR="808000";;
+		"$LIME") DCLR="BFFF00";;
+		"$SRGR") DCLR="00FF7F";;
+		"$TRQS") DCLR="40E0D0";;
+		"$INDG") DCLR="6f00ff";;
+		
 		"$MIBL") DCLR="0D84FF";;
 		"$PXBL") DCLR="1A73E8";;
 		"$OPRD") DCLR="EB0028";;
+		"$DSCR") DCLR="7289da";;
+		"$SPGR") DCLR="1DB954";;
+		"$TWTR") DCLR="1DA1F2";;
+		"$RZGR") DCLR="00ff00";;
+		"$REDT") DCLR="ff4500";;
+		"$VNGR") DCLR="00b488";;
 	esac
 }
 
@@ -903,6 +1135,7 @@ main_mode() {
 main_kbh() {
 	ui_print "  Do you want to reduce keyboard bottom height?"
 	ui_print "  NOTICE: Height are based on pill thickness"
+	ui_print "  If it doesn't work, try nospacing module from RKBDI"
 	sp
 	pick_opt yesno KBH
 	[ $KBH ] && MLOOP=true
@@ -1075,6 +1308,7 @@ pgm_script() {
 			array func
 		else
 			build_apk Config
+			sp
 			ui_print "  Copying special files for MIUI..."
 			case $SVAL1 in
 				0) GLO=FULL;;
@@ -1143,6 +1377,7 @@ sbm_script() {
 		sed -i "s|<val>|$H|" ${VALDIR}/dimens.xml
 		build_apk "Statusbar Height"
 	else
+		sp
 		ui_print "  Copying special files for MIUI..."
 		set_dir HeightMIUI
 		[ -f /system/media/theme/default/framework-res ] && ui_print "  Overwriting default theme..."

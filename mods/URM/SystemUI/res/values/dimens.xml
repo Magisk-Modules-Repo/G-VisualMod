@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="corner_size"><val>dp</dimen>
+	<dimen name="pip_corner_radius"><val>dp</dimen>
 </resources>

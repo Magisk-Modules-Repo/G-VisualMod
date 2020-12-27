@@ -1,7 +1,7 @@
 <h1 align="center">G-Visual Mod</h1>
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Version-v3.0.3-green.svg?longCache=true&style=popout-round"
+  <img src="https://img.shields.io/badge/Version-v3.1-green.svg?longCache=true&style=popout-round"
   alt="Version" />
 </div>
 
@@ -52,6 +52,7 @@
 - Choose mods you want to be installed by choosing vol key
 
 ## How To Install (Alternatives)
+This method only works on recovery!
 Rename the module zip depends on what you need.
 
 You can combine multiple options per-mod.
@@ -87,27 +88,59 @@ Example: oos,imrs.zip, that means modify pill shape same as OxygenOS with immers
 
 Change pill color
 ```
-Usage:	[color],[dualtone].zip
+Usage:	[color] (or [color1],[color2]),[dualtone].zip
 	color:
-	Default AOSP's accents
+	Default accents
 	- Default (White'nblack): dflt
 	- Amethyst				: amty
 	- Aquamarine			: aqmr
 	- Carbon				: crbn
 	- Cinnamon				: cnmn
-	- Green					: gren
 	- Ocean					: ocea
 	- Orchid				: orcd
 	- Palette				: pltt
-	- Purple				: prpl
 	- Sand					: sand
 	- Space					: spce
 	- Tangerine				: tgrn
 	
-	OEMs accents
-	- MIUI 12 Blue			: mibl
-	- Pixel Blue			: pxbl
-	- OnePlus Red			: oprd
+	Solid colors
+	- Red					: cred
+	- Brown					: brwn
+	- Yellow				: elyl
+	- Orange				: orng
+	- Green					: gren
+	- Cyan					: cyan
+	- Blue					: blue
+	- Magenta				: mgnt
+	- Purple				: prpl
+	
+	Root colors               
+	- HotPink				: htpk
+	- Crimson				: crms
+	- BrightMaroon			: brmr
+	- Rose					: rose
+	- Salmon				: slmn
+	- Coral					: corl
+	- OrangeRed				: orrd
+	- Cocoa					: ccoa
+	- Golden				: gldn
+	- Olive					: olve
+	- Lime					: lime
+	- SpringGreen			: srgr
+	- Turquoise             : trqs
+	- Indigo                : indg
+	
+	Brand colors              
+	- MIUI12                : mibl
+	- PixelBlue             : pxbl
+	- OnePlusRed            : oprd
+	- Discord               : dscr
+	- SpotifyGreen          : spgr
+	- TwitterBlue           : twtr
+	- RazerGreen            : rzgr
+	- Reddit                : redt
+	- VineGreen             : vngr
+
 	dualtone (Pill Gesture will slighty changes color between light and dark theme):
 	- Yes					: dt
 ```
@@ -184,6 +217,13 @@ Also you should check <a href="https://github.com/DanGLES3">DanGLES3</a>'s <a hr
 - <a href="https://t.me/tzlounge">Support Group</a>.
 
 ## Changelog
+### v3.1
+  - Fixed: UI radius doesn't apply on some ROMs
+  - Added: rounded pip (thx to DanGLES3 for pointing it out)
+  - Added: additional UI radius configs
+  - Added: lot of color options
+  - Tiny cleanups
+  
 ### v3.0.3
   - Fixed: color not changing on light mode (dark mode still buggy)
   - Fixed: rounded corner installation overlap
