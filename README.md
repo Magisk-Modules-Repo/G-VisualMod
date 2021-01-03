@@ -217,6 +217,11 @@ Also you should check <a href="https://github.com/DanGLES3">DanGLES3</a>'s <a hr
 - <a href="https://t.me/tzlounge">Support Group</a>.
 
 ## Changelog
+### v3.1.1
+  - Fixed: Pill color on MIUI 12.5
+  - Bottom margin fix currently uncompatible on MIUI 12.5
+
+  
 ### v3.1
   - Fixed: UI radius doesn't apply on some ROMs
   - Added: rounded pip (thx to DanGLES3 for pointing it out)

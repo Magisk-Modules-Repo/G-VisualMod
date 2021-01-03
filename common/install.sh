@@ -1222,7 +1222,7 @@ pgm_script() {
 		[ -z $LCLR ] && LCLR="FFFFFF"
 		[ -z $DCLR ] && DCLR="000000"
 		[ -z $DLTN ] && DCLR=$LCLR
-		[ -z $MIUI ] && VAR="bar_home_"
+		[ $API -ge 30 ] && VAR="bar_home_"
 		ARR="<var>|$VAR:<lclr>|$LCLR:<dclr>|$DCLR:<ltrp>|$LTRP:<dtrp>|$DTRP:"
 		func() {
 			sed -i "s|${SRR}|" ${VALDIR}/colors.xml
@@ -1338,7 +1338,7 @@ sbm_zip() {
 }
 
 main_sbm() {
-	if [ $MIUI ] && [ -z $MIUISM ]; then
+	if [ $MIUI ] && [ -z $MIUISM ] && [ $API -le 29 ]; then
 		sp
 		ui_print "  ########################"
 		ui_print "  # G-STATUSBAR MIUI FIX #"
