@@ -1222,7 +1222,7 @@ pgm_script() {
 		[ -z $LCLR ] && LCLR="FFFFFF"
 		[ -z $DCLR ] && DCLR="000000"
 		[ -z $DLTN ] && DCLR=$LCLR
-		[ $API -ge 30 ] && VAR="bar_home_"
+		[ -z $MIUI ] && VAR="bar_home_" || [ $API -ge 30 ] && VAR="bar_home_"
 		ARR="<var>|$VAR:<lclr>|$LCLR:<dclr>|$DCLR:<ltrp>|$LTRP:<dtrp>|$DTRP:"
 		func() {
 			sed -i "s|${SRR}|" ${VALDIR}/colors.xml
