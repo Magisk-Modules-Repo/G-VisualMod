@@ -1,0 +1,179 @@
+#!/system/bin/sh
+# Terminal Magisk Mod Template
+# by veez21 @ xda-developers
+# adjusted by Gnonymous7 @ Telegram & xda-developers
+
+# Magisk Module ID **
+ID="gvisualmod"
+
+# Rerun with root
+_name=$(basename $0)
+ls /data/adb>/dev/null 2>&1
+if [ "$?" != 0 ]; then
+	su -c $_name "$@" 
+	exit
+fi
+
+# Magisk Mod Directory
+[ -d "/sbin/.magisk" ] && MOUNTPATH="/sbin/.magisk/modules" || MOUNTPATH="$(find /dev -mindepth 2 -maxdepth 2 -type d -name ".magisk")/modules"
+MODDIR="$MOUNTPATH/$ID"
+[ ! -d $MODDIR ] && { echo "Module not detected!"; exit 1; }
+
+# Set path to your busybMODox if applicable
+_bb=
+
+# Load mod-util.sh
+. $MODDIR/mod-util.sh || exit $?
+
+# Set Log Files
+mount -o remount,rw /cache 2>/dev/null
+mount -o rw,remount /cache 2>/dev/null
+# > Logs should go in this file
+LOG=/data/local/tmp/$ID.log
+oldLOG=/data/local/tmp/$ID-old.log
+# > Verbose output goes here
+VERLOG=/data/local/tmp/$ID-verbose.log
+oldVERLOG=/data/local/tmp/$ID-verbose-old.log
+stdoutLOG=$MODDIR/logs/$ID-STDOUT.log
+oldstdoutLOG=$MODDIR/logs/$ID-STDOUT-old.log
+
+# Start Logging verbosely
+mv -f $VERLOG $oldVERLOG 2>/dev/null; mv -f $LOG $oldLOG 2>/dev/null; mv -f $stdoutLOG $oldstdoutLOG 2>/dev/null
+# exec 3>&1
+# exec 1>$stdoutLOG
+set -x 2>$VERLOG
+
+[ -d /system/xbin ] && BINPATH=xbin || BINPATH=bin
+
+# Developer Mode
+DEVMODE=
+
+# Load custom functions and strings
+if [ $DEVMODE ]; then
+	. /storage/emulated/0/g-functions.sh
+	. /storage/emulated/0/$_name-functions.sh
+	. /storage/emulated/0/$_name-strings.sh
+else
+	. $MODDIR/common/g-functions.sh
+	. $MODDIR/common/$_name-functions.sh
+	. $MODDIR/common/$_name-strings.sh
+fi
+
+# Pre-Install
+GVMEXT=/data/adb/$ID
+LOCALLOG=/storage/emulated/0/Documents/${ID}logs
+BACKUP=/data/adb/$ID/savedmods.log
+[ -d $GVMEXT ] || mkdir -p $GVMEXT
+[ -d $LOCALLOG ] || mkdir -p $LOCALLOG
+[ -f $BACKUP ] || touch $BACKUP
+cp -rf ${MODDIR}/mods ${GVMEXT}/mods
+MDLVAL=$((${#MDL}+2))
+
+# Define ACODE
+[ $API = 28 ] && ACODE=9
+[ $API = 29 ] && ACODE=10
+[ $API = 30 ] && ACODE=11
+
+# OS used
+MIUI=$(grep_prop ro.miui.ui.version.name)
+MIUIVERCODE=$(echo $MIUI | sed 's/[^0-9]*//g')
+OOS=$(grep_prop ro.oxygen.version*)
+
+# Aliasing path
+unalias zip
+unalias unzip
+alias zipsigner=/system/${BINPATH}/zipsigner
+alias unzip=/system/${BINPATH}/zip
+alias unzip=/system/${BINPATH}/unzip
+alias aapt=/system/${BINPATH}/aapt
+
+# Pre-install
+fancy_opening
+module_update
+pre_restore
+
+# User input
+menu_MAIN
+main_loop
+
+# Where to copy the overlay
+set_overlaydir
+
+# Install
+echo -e "\n Removing remnants"
+rm -rf $STEPDIR/G-*
+rm -rf $MODDIR/system/oem
+rm -rf $MODDIR/system/vendor
+rm -rf $MODDIR/system/product
+rm -rf $MODDIR/system/media
+
+if [ $URM ]; then
+	MODLOC=${GVMEXT}/mods/URM
+	PREFIX="G-UIRadius"
+	if [ -z $MIUI ] && [ $URM ]; then
+		while true; do
+			header "Applying radius to all icon shapes"
+			echo -e "\n ${R}PLEASE READ!"
+			echo -e " NOT ALL ROM SUPPORT THIS!${N}"
+			echo -e " Take a screenshot if you want"
+			echo -e ""
+			echo -e " You can try this option and check your iconshapes after"
+			echo -e " "
+			echo -e " Workaround if iconshapes are missing:"
+			echo -e " ${Y}1st solution:${N}"
+			echo -e " Select ${G}NO${N} on this option"
+			echo -e " and see if iconshapes are missing or not"
+			echo -e ""
+			echo -e " ${Y}2nd solution:${N}"
+			echo -e " 1. Disable this module in magisk manager"
+			echo -e " 2. Reboot"
+			echo -e " 3. Set up your iconshapes, font, accent, etc and apply it"
+			echo -e " 4. Re-enable this module"
+			echo -e " If you change styles to default, you have to do this again"
+			echo -e ""
+			echo -e " If it still doesn't work:"
+			echo -e " Type #iconshapefix on telegram Support Group (@tzlounge)"
+			echo -e " It will guide you to report to your rom maintainer"
+			echo -e ""
+			echo -e " Apply radius to ${G}all icon shapes?${N}"
+			user_input yn
+			input_yn "eval ISR=true" && break
+		done
+	fi
+	header "Installing"
+	echo ""
+	echo ""
+	urm_script & e_spinner " Installing UI Radius Mod"
+	echo " - ${G}Done${N}"
+else
+	header "Installing"
+fi
+
+if [ $SNM ]; then
+	MODLOC=${GVMEXT}/mods/SNM
+	echo ""
+	snm_script & e_spinner " Installing StatusBar & Notification Mod"
+	echo " - ${G}Done${N}"
+fi
+
+if [ $PGM ]; then
+	MODLOC=${GVMEXT}/mods/PGM
+	PREFIX="G-PillGesture"
+	echo ""
+	pgm_script & e_spinner " Installing Pill Gesture Mod"
+	echo " - ${G}Done${N}"
+fi
+
+if [ $MIUI ]; then
+	echo ""
+	miui_method_pack & e_spinner " Doing MIUI's things"
+	echo " - ${G}Done${N}"
+fi
+
+find $STEPDIR -type f -exec chmod 644 {} \;
+[ $MIUI ] && find $MODDIR/system/media -type f -exec chmod 644 {} \;
+
+# Post-install
+cleanup
+store_mod
+exit_finish

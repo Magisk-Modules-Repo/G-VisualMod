@@ -4,7 +4,7 @@
 		android:versionCode="1"
 		android:versionName="1.0">
     <overlay android:targetPackage="android"
-        android:priority="100"
+        android:priority="700"
 		android:isStatic="true"/>
 	<application android:hasCode="false"
 		android:extractNativeLibs="false" />

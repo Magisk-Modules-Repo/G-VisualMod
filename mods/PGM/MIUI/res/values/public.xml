@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <public type="integer" name="config_navBarInteractionMode" id="0x7f020000" />
+    <public type="bool" name="config_navBarCanMove" id="0x7f030000" />
+    <public type="dimen" name="navigation_bar_height" id="0x7f040000" />
+    <public type="dimen" name="navigation_bar_height_landscape" id="0x7f040001" />
+</resources>

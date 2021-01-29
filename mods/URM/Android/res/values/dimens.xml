@@ -4,4 +4,6 @@
 	<dimen name="subtitle_shadow_radius"><val>dp</dimen>
 	<dimen name="dialog_corner_radius"><val>dp</dimen>
     <dimen name="chooser_corner_radius"><val>dp</dimen>
+	<dimen name="default_magnifier_corner_radius"><val>dp</dimen>
+	<dimen name="tooltip_corner_radius"><val>dp</dimen>
 </resources>

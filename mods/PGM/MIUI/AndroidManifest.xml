@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" standalone="no"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	android:compileSdkVersion="<vapi>"
+	android:compileSdkVersionCodename="<vcde>"
+	package="com.android.systemui.gesture.line.overlay"
+	platformBuildVersionCode="<vapi>"
+	platformBuildVersionName="<vcde>">
+    <application android:extractNativeLibs="false"/>
+    <overlay android:priority="2" android:targetPackage="android"/>
+</manifest>

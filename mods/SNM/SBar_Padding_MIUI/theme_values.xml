@@ -1,0 +1,5 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<MIUI_Theme_Values>
+	<dimen name="status<var>bar_padding_start"><val>dp</dimen>
+	<dimen name="status<var>bar_padding_end"><val>dp</dimen>
+</MIUI_Theme_Values>

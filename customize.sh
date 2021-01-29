@@ -1,68 +1,74 @@
-##########################################################################################
-#
-# MMT Extended Config Script
-#
-##########################################################################################
-
-##########################################################################################
-# Config Flags
-##########################################################################################
-
-# Uncomment and change 'MINAPI' and 'MAXAPI' to the minimum and maximum android version for your mod
-# Uncomment DYNLIB if you want libs installed to vendor for oreo+ and system for anything older
-# Uncomment DEBUG if you want full debug logs (saved to /sdcard)
-MINAPI=28
-#MAXAPI=25
-#DYNLIB=true
-DEBUG=true
-
-##########################################################################################
-# Replace list
-##########################################################################################
-
-# List all directories you want to directly replace in the system
-# Check the documentations for more info why you would need this
-
-# Construct your list in the following format
-# This is an example
-REPLACE_EXAMPLE="
-/system/app/Youtube
-/system/priv-app/SystemUI
-/system/priv-app/Settings
-/system/framework
-"
-
-# Construct your own list here
-REPLACE="
-"
-
-##########################################################################################
-# Permissions
-##########################################################################################
-
-set_permissions() {
-  : # Remove this if adding to this function
-
-  # Note that all files/folders in magisk module directory have the $MODPATH prefix - keep this prefix on all of your files/folders
-  # Some examples:
-  
-  # For directories (includes files in them):
-  # set_perm_recursive  <dirname>                <owner> <group> <dirpermission> <filepermission> <contexts> (default: u:object_r:system_file:s0)
-  
-  # set_perm_recursive $MODPATH/system/lib 0 0 0755 0644
-  # set_perm_recursive $MODPATH/system/vendor/lib/soundfx 0 0 0755 0644
-
-  # For files (not in directories taken care of above)
-  # set_perm  <filename>                         <owner> <group> <permission> <contexts> (default: u:object_r:system_file:s0)
-  
-  # set_perm $MODPATH/system/lib/libart.so 0 0 0644
-  # set_perm /data/local/tmp/file.txt 0 0 644
-}
-
-##########################################################################################
-# MMT Extended Logic - Don't modify anything after this
-##########################################################################################
-
 SKIPUNZIP=1
-unzip -qjo "$ZIPFILE" 'common/functions.sh' -d $TMPDIR >&2
-. $TMPDIR/functions.sh
+
+# Script inspired by skittles9823's QuickSwitch
+
+# Mod display
+ui_print "    ___     _  _ __ ____ _  _  __  __      _  _  __ ____ "
+ui_print "   / __)___/ )( (  / ___/ )( \\/ _\\(  )    ( \\/ )/  (    \\"
+ui_print "  ( (_ (___\\ \\/ /)(\\___ ) \\/ /    / (_/\\  / \\/ (  O ) D ("
+ui_print "   \\___/    \\__/(__(____\\____\\_/\\_\\____/  \\_)(_/\\__(____/"
+ui_print " "
+
+set -x
+
+# API minimum
+if [ $API -lt "28" ]; then
+  abort "  G-Visual Mod only work on Android Pie 9+ only"
+fi
+
+# OS used
+MIUI=$(grep_prop ro.miui.ui.version.name)
+OOS=$(grep_prop ro.oxygen.version*)
+# OS incompatiblity
+if [ $MIUI ]; then
+	MIUIVERCODE=$(echo $MIUI | sed 's/[^0-9]*//g')
+	[ $MIUIVERCODE -ge 12 ] || abort "  Only supported on MIUI 12 and higher!"
+fi
+
+# Extract needed module and its permissions
+ui_print "Extracting module..."
+unzip -o $ZIPFILE mods/* system/* common/* module.prop uninstall.sh mod-util.sh gvm -d ${MODPATH} >&2
+chmod +x ${MODPATH}/common/addon/*
+chmod +x ${MODPATH}/common/addon/aapt/*
+
+# Define bin location
+[ -d /system/xbin ] && BINPATH=xbin || BINPATH=bin
+mkdir -p ${MODPATH}/system/${BINPATH}
+mv -f ${MODPATH}/gvm ${MODPATH}/system/${BINPATH}/gvm
+
+# Make sure no leftover
+rm -rf /data/adb/gvisualmod/mods
+rm -rf /data/adb/gvisualmod/module.prop
+rm -rf /data/resource-cache/overlays.list
+find /data/resource-cache/ -type f \( -name *Gestural* -o -name *Gesture* -o -name *G-* \) \
+	-exec rm -rf {} \;
+
+# Define which AAPT to use
+[ "$(${MODPATH}/common/addon/aapt/aaptx86 v)" ] && AAPT=aaptx86
+[ "$(${MODPATH}/common/addon/aapt/aapt v)" ] && AAPT=aapt
+[ "$(${MODPATH}/common/addon/aapt/aapt64 v)" ] && AAPT=aapt64
+cp -af ${MODPATH}/common/addon/aapt/${AAPT} ${MODPATH}/system/${BINPATH}/aapt
+cp -af ${MODPATH}/common/addon/zip ${MODPATH}/system/${BINPATH}/zip
+cp -af ${MODPATH}/common/addon/zipsigner ${MODPATH}/system/${BINPATH}/zipsigner
+cp -af ${MODPATH}/common/addon/zipsigner-3.0-dexed.jar ${MODPATH}/system/${BINPATH}/zipsigner-3.0-dexed.jar
+
+rm -rf "${MODPATH}/common/addon"
+
+NOTICE="
+- Usage:
+\n>>>>>>>> Install terminal emulator
+\n>>>>>>>> Install busybox (optional)
+\n>>>>>>>> Reboot
+\n>>>>>>>> Type [gvm] on your terminal
+\n>>>>>>>> (You might have to type [su] before [gvm])
+\n>>>>>>>> (There may be a problem with Termux)
+"
+echo -e $NOTICE
+
+# Set permissions
+set_perm_recursive $MODPATH 0 0 0755 0644
+set_perm ${MODPATH}/system/${BINPATH}/aapt 0 2000 0755
+set_perm ${MODPATH}/system/${BINPATH}/gvm 0 2000 0777
+set_perm ${MODPATH}/system/${BINPATH}/zip 0 0 0755
+set_perm ${MODPATH}/system/${BINPATH}/zipsigner 0 0 0755
+set_perm ${MODPATH}/system/${BINPATH}/zipsigner-3.0-dexed.jar 0 0 0644

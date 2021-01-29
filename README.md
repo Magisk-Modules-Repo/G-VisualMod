@@ -1,212 +1,61 @@
 <h1 align="center">G-Visual Mod</h1>
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Version-v3.1-green.svg?longCache=true&style=popout-round"
+  <img src="https://img.shields.io/badge/Version-v4.0-green.svg?longCache=true&style=popout-round"
   alt="Version" />
 </div>
 
 <div align="center">
- <strong>Customize your Android's Visual!</strong>
+ <strong>Systemlessy customize your Android's Visual!</strong>
 </div>
 
-![](https://i.imgur.com/pZPi8qc.jpg)
+![](https://i.imgur.com/B5XZBfZ.png)
 
 ## Compatibility
-### Magisk Requirement
   - Magisk 20+
-### API Requirement
   - Android Pie (9) and higher
-  - Android Q (10) & Android R (11) for PillGesture
-### ROM Requirement
+  - Android Q (10) & Android R (11) for Pill Gesture Mod
+  
+## Known supported ROMs
   - AOSP and Custom ROMs
-  - MIUI 12
+  - MIUI 12 and higher
   - OxygenOS
   - OneUI (weak reports)
 
 ## Known Issue
 - Immersive mode and Pill Transparency wont work on OxygenOS!
 - Immersive mode shows white pill on some apps in dark theme!
-- UI Radius Mod wont work on MIUI 12!
-- Not all rom support UI radius iconshape option! (Read at the bottom of this README!)
 
 ## What this module do
 ### UI Radius Mod
 - Change UI Roundyness
 
+### StatusBar & Notification Mod
+- Change StatusBar height
+- Change StatusBar padding
+- Enable Fullscreen apps (Notchkiller)
+- Change notification side padding
+- MIUI StatusBar bottom padding fix
+
 ### Pill Gesture Mods
 - Change pill thickness and/or width
-- Change pill color (DualTone & DualColor available)
-- Change pill transparency (with Immersive mode enabled)
-- Enable Immersive or Fullscreen mode
-
-### Statusbar Mod
-- Change statusbar height
-- Fix MIUI bottom margin
-
-### NotchKiller
-- Enable NotchKiller (Fullscreen apps)
+- Change pill color
+- Change pill transparency
+- Immersive mode 
+- Fullscreen mode
+- Reduce bottom keyboard space
 
 ## How To Install
-- Execute the zip using Magisk (No working guarantee on recovery)
-- If you have some problem with vol keys please look at next section
-- Choose mods you want to be installed by choosing vol key
-
-## How To Install (Alternatives)
-This method only works on recovery!
-Rename the module zip depends on what you need.
-
-You can combine multiple options per-mod.
-
-Change UI radius
-```
-Usage:	[radius],[isr].zip
-	radius:
-	- Small					: rsmall
-	- Medium				: rmedium
-	- Large					: rlarge
-	isr (iconshape fix)
-	- Yes					: isr
-```
-Example: rlarge,isr.zip, that means modify UI radius to large and fix iconshape.
-
-
-Change pill shape
-```
-Usage:	[template],[mode].zip
-	template:
-	- AOSP					: aosp
-	- OxygenOS				: oos
-	- MIUI					: miui
-	- IOS					: ios
-	
-	mode:
-	- Immersive				: imrs
-	- Fullscreen			: full (DO NOT combine with any other options!)
-```
-Example: oos,imrs.zip, that means modify pill shape same as OxygenOS with immersive mode enabled.
-
-
-Change pill color
-```
-Usage:	[color] (or [color1],[color2]),[dualtone].zip
-	color:
-	Default accents
-	- Default (White'nblack): dflt
-	- Amethyst				: amty
-	- Aquamarine			: aqmr
-	- Carbon				: crbn
-	- Cinnamon				: cnmn
-	- Ocean					: ocea
-	- Orchid				: orcd
-	- Palette				: pltt
-	- Sand					: sand
-	- Space					: spce
-	- Tangerine				: tgrn
-	
-	Solid colors
-	- Red					: cred
-	- Brown					: brwn
-	- Yellow				: elyl
-	- Orange				: orng
-	- Green					: gren
-	- Cyan					: cyan
-	- Blue					: blue
-	- Magenta				: mgnt
-	- Purple				: prpl
-	
-	Root colors               
-	- HotPink				: htpk
-	- Crimson				: crms
-	- BrightMaroon			: brmr
-	- Rose					: rose
-	- Salmon				: slmn
-	- Coral					: corl
-	- OrangeRed				: orrd
-	- Cocoa					: ccoa
-	- Golden				: gldn
-	- Olive					: olve
-	- Lime					: lime
-	- SpringGreen			: srgr
-	- Turquoise             : trqs
-	- Indigo                : indg
-	
-	Brand colors              
-	- MIUI12                : mibl
-	- PixelBlue             : pxbl
-	- OnePlusRed            : oprd
-	- Discord               : dscr
-	- SpotifyGreen          : spgr
-	- TwitterBlue           : twtr
-	- RazerGreen            : rzgr
-	- Reddit                : redt
-	- VineGreen             : vngr
-
-	dualtone (Pill Gesture will slighty changes color between light and dark theme):
-	- Yes					: dt
-```
-Example: tgrn,dt.zip, that means modify pill color to tangerine with dual tone enabled.
-
-
-Change pill transparency
-```
-Usage:	[transparency].zip
-	transparency:
-	- 10%			: 10
-	- 20%			: 20
-	- 30%			: 30
-	- 40%			: 40
-	- 50%			: 50
-	- 60%			: 60
-	- 70%			: 70
-	- 80%			: 80
-	- 90%			: 90
-```
-Example: 70.zip, that means modify pill transparency to 70%.
-
-
-Change statusbar height
-```
-Usage:	[height].zip
-	height:
-	- Medium			: hmedium
-	- Large				: hlarge
-	- XLarge			: hxlarge
-```
-Example: hlarge.zip, that means modify statusbar height to large.
-
-
-Activate notchkiller
-```
-Usage:	[mode].zip
-	mode:
-	- Active		: nck
-```
-Example: nck.zip, that means activate notchkiller.
-
-## Applying radius to all icon shapes
-PLEASE READ!
-
-NOT ALL ROM SUPPORT THIS!
-
-You can try this option and check your iconshapes after.
-
-Workarounds if iconshapes are missing
-
-### 1st solution
-Select NO on this option and see if iconshapes are overriding UIRadius.
-
-### 2nd solution
-1. Disable this module in magisk manager
-2. Reboot
-3. Set up your iconshapes, font, accent, etc and apply it
-4. Install this module (you can restore other selected mods)
-5. Pick radius and select YES on this option
-Do not change styles to default, or you have to do this again!
-
-If it still doesn't work, type #iconshapefix on telegram Support Group (@tzlounge), it will guide you to report to your rom maintainer.
+- Flash the zip using Magisk (No working guarantee on recovery)
+- Install terminal emulator (There may be a problem with Termux)
+- Install busybox (optional)
+- Reboot
+- Type [gvm] on your terminal (You might have to type [su] before [gvm])
 
 ## Credits
-- <a href="https://github.com/Zackptg5">Zackptg5</a> for MMT-Ex template.
+- <a href="https://github.com/Zackptg5">Zackptg5</a> for MMT-Ex template (old template).
+- <a href="https://github.com/veez21">veez21</a> for Terminal Emulator Magisk Module template.
+- <a href="https://github.com/Didgeridoohan">Didgeridoohan</a> for script inspiration.
 - <a href="https://github.com/topjohnwu">topjohnwu</a> for entire Magisk universe.
 - <a href="https://github.com/skittles9823">skittles9823</a> for helping me.
 - All the testers.
@@ -214,14 +63,24 @@ If it still doesn't work, type #iconshapefix on telegram Support Group (@tzloung
 Also you should check <a href="https://github.com/DanGLES3">DanGLES3</a>'s <a href="https://github.com/Magisk-Modules-Repo/HideNavBar">Fullscreen/Immersive module</a>. Since our installation methods are really different, there could be some conflict if you combine this module especially the pill gesture background, because on how my module control the height of the keyboard bottom based on pill gesture height. Otherwise, his module is perfect if you want only fullscreen/immersive mode.
 
 ## Need to contact me?
-- <a href="https://t.me/tzlounge">Support Group</a>.
+- <a href="https://t.me/tzlounge">Support group on Telegram</a>.
+- <a href="https://forum.xda-developers.com/t/module-g-visual-mod-systemlessy-customize-your-androids-visual.4225571/">Support thread on XDA</a>.
 
 ## Changelog
+### v4.0
+  - Switch to terminal installation
+  - UI Radius now support MIUI
+  - Pill Gesture Length divided to Portrait and Landscape
+  -	Added StatusBar padding
+  - Added Notification side padding
+  - Fix immersive on various dpi phones
+  - Will always restore your last option
+  - You can input custom values now hehe
+  
 ### v3.1.1
   - Fixed: Pill color on MIUI 12.5
   - Bottom margin fix currently uncompatible on MIUI 12.5
 
-  
 ### v3.1
   - Fixed: UI radius doesn't apply on some ROMs
   - Added: rounded pip (thx to DanGLES3 for pointing it out)

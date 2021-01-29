@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="config_dialogCornerRadius"><val>dp</dimen>
+	<dimen name="navigation_home_handle_width"><val>dp</dimen>
 </resources>

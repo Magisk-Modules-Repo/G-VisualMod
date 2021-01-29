@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='utf-8' standalone='yes' ?>
+<MIUI_Theme_Values>
+	<dimen name="panel_content_margin"><val>dp</dimen>
+</MIUI_Theme_Values>

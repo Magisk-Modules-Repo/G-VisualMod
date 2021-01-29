@@ -2,4 +2,7 @@
 <resources>
     <dimen name="corner_size"><val>dp</dimen>
 	<dimen name="pip_corner_radius"><val>dp</dimen>
+	<dimen name="control_corner_radius"><val>dp</dimen>
+	<dimen name="notification_shadow_radius"><val>dp</dimen>
+	<dimen name="rect_button_radius"><val>dp</dimen>
 </resources>
