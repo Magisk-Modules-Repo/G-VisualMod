@@ -175,5 +175,6 @@ find $STEPDIR -type f -exec chmod 644 {} \;
 
 # Post-install
 cleanup
+[ $exitERROR ] && exit_error
 store_mod
 exit_finish

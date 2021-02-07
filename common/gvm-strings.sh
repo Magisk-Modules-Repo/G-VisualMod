@@ -16,7 +16,7 @@ mod_footer() {
 	var=$((MDLVAL/2))
 	var=$((MDLVAL/2+1))
 	printf "${C}- %.0s${N}"  $(seq $var)
-	echo -e "\n Support group ${Y}@tzlounge${N} @Telegram or ${Y}Gnonymous7${N} @XDA for help."
+	echo -e "\n Support on ${Y}@tzlounge${N} Telegram or ${Y}Gnonymous7${N} XDA."
 	printf "${C}- %.0s${N}"  $(seq $var)
 }
 
@@ -27,6 +27,7 @@ RELUPDWEB="https://raw.githubusercontent.com/Magisk-Modules-Repo/G-VisualMod/mas
 
 M_URM="UI Radius"
 	S_URM_S="Small (2)"
+	S_URM_D="Default (4)"
 	S_URM_N="Normal (12)"
 	S_URM_M="Medium (20)"
 	S_URM_L="Large (32)"
@@ -34,6 +35,7 @@ M_URM="UI Radius"
 	M_URM_C="Custom Radius"
 
 	V_URM_S=2
+	V_URM_D=4
 	V_URM_N=12
 	V_URM_M=20
 	V_URM_L=32
@@ -41,30 +43,43 @@ M_URM="UI Radius"
 M_SNM="StatusBar & Notification"
 
 	M_SNM_SH="StatusBar Height"
+		S_SNM_SH_S="Small (20)"
+		S_SNM_SH_D="Default (24)"
 		S_SNM_SH_M="Medium (34)"
 		S_SNM_SH_L="Large (40)"
 		S_SNM_SH_X="Extra Large (48)"
+		
 		M_SNM_SH_C="Custom Height"
 
+		V_SNM_SH_S=20
+		V_SNM_SH_D=24
 		V_SNM_SH_M=34
 		V_SNM_SH_L=40
 		V_SNM_SH_X=48
 
 	M_SNM_SP="StatusBar Padding"
-		S_SNM_SP_B="Best value (5)"
+		S_SNM_SP_M="MIUI fit (5)"
+		S_SNM_SP_A="AOSP fit (10)"
+		
 		M_SNM_SP_C="Custom Padding"
 
-		V_SNM_SP_B=5
+		V_SNM_SP_M=5
+		V_SNM_SP_A=10
 
 	M_SNM_NK="NotchKiller"
 		S_SNM_NK_Y="Activate"
 		V_SNM_NK_Y="true"
 
 	M_SNM_NP="Notification Side Padding"
-		S_SNM_NP_B="Best value (32)"
+		S_SNM_NP_M="MIUI fit (32)"
+		S_SNM_NP_AD="AOSP default (4)"
+		S_SNM_NP_A="AOSP fit (10)"
+		
 		M_SNM_NP_C="Custom Padding"
 
-		V_SNM_NP_B=32
+		V_SNM_NP_M=32
+		V_SNM_NP_AD=4
+		V_SNM_NP_A=10
 		
 	M_SNM_MS="MIUI StatusBar Bottom Padding Fix"
 		S_SNM_MS_Y="Activate"
@@ -77,6 +92,7 @@ M_PGM="Pill Gesture"
 			S_PGM_SH_TH_MI="1.85dp (MIUI 12)"
 			S_PGM_SH_TH_IO="2.5dp (IOS)"
 			S_PGM_SH_TH_U1="3.0dp (Dev pick)"
+			
 			M_PGM_SH_TH_C="Custom Thickness"
 			
 			V_PGM_SH_TH_AO=1
@@ -93,6 +109,7 @@ M_PGM="Pill Gesture"
 				S_PGM_SH_LE_P_IO="160dp (IOS)"
 				S_PGM_SH_LE_P_U2="180dp (Dev Pick)"
 				S_PGM_SH_LE_P_U3="200dp (What why?)"
+				
 				M_PGM_SH_LE_P_C="Custom Length"
 				
 				V_PGM_SH_LE_P_AO=72
@@ -111,7 +128,6 @@ M_PGM="Pill Gesture"
 			
 	M_PGM_CL="Pill Gesture Color"
 		M_PGM_CL_LH="Pill Gesture Light Color"
-			S_PGM_CL_LH_DFBK="Default Black"
 			S_PGM_CL_LH_AMTY="Amethyst"
 			S_PGM_CL_LH_AQMR="Aquamarine"
 			S_PGM_CL_LH_CRBN="Carbon"
@@ -155,7 +171,6 @@ M_PGM="Pill Gesture"
 			S_PGM_CL_LH_REDT="Reddit"
 			S_PGM_CL_LH_VNGR="Vine Green"
 			
-			V_PGM_CL_LH_DFBK="000000"
 			V_PGM_CL_LH_AMTY="A03EFF"
 			V_PGM_CL_LH_AQMR="23847D"
 			V_PGM_CL_LH_CRBN="434E58"
@@ -200,7 +215,6 @@ M_PGM="Pill Gesture"
 			V_PGM_CL_LH_VNGR="00b488"
 			
 		M_PGM_CL_DR="Pill Gesture Dark Color"
-			S_PGM_CL_DR_DFWT="Default White"
 			S_PGM_CL_DR_AMTY="$S_PGM_CL_LH_AMTY"
 			S_PGM_CL_DR_AQMR="$S_PGM_CL_LH_AQMR"
 			S_PGM_CL_DR_CRBN="$S_PGM_CL_LH_CRBN"
@@ -244,7 +258,6 @@ M_PGM="Pill Gesture"
 			S_PGM_CL_DR_REDT="$S_PGM_CL_LH_REDT"
 			S_PGM_CL_DR_VNGR="$S_PGM_CL_LH_VNGR"
 			
-			V_PGM_CL_DR_DFWT="FFFFFF"
 			V_PGM_CL_DR_AMTY="BD78FF"
 			V_PGM_CL_DR_AQMR="1AFFCB"
 			V_PGM_CL_DR_CRBN="3DDCFF"
@@ -330,6 +343,7 @@ PGM
 
 cont_URM="
 URM_S
+URM_D
 URM_N
 URM_M
 URM_L
@@ -345,6 +359,8 @@ SNM_NP
 SNM_MS
 "
 	cont_SNM_SH="
+	SNM_SH_S
+	SNM_SH_D
 	SNM_SH_M
 	SNM_SH_L
 	SNM_SH_X
@@ -352,14 +368,17 @@ SNM_MS
 	"
 
 	cont_SNM_SP="
-	SNM_SP_B
+	SNM_SP_M
+	SNM_SP_A
 	SNM_SP_C
 	"
 
 	cont_SNM_NK="SNM_NK_Y"
 
 	cont_SNM_NP="
-	SNM_NP_B
+	SNM_NP_M
+	SNM_NP_AD
+	SNM_NP_A
 	SNM_NP_C
 	"
 	cont_SNM_MS="SNM_MS_Y"

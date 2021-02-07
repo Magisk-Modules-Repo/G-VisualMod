@@ -161,7 +161,7 @@ apk_dir() {
 create_apk() {
 	aapt p -f -M ${APKDIR}/AndroidManifest.xml \
 		-I /system/framework/framework-res.apk -S ${APKDIR}/res/ \
-		-F ${GVMEXT}/unsigned.apk
+		-F ${GVMEXT}/unsigned.apk >> "$LOG" 2>&1
 
 	if [ -s ${GVMEXT}/unsigned.apk ]; then
 		cd ${GVMEXT}
@@ -172,7 +172,7 @@ create_apk() {
 		rm -rf ${GVMEXT}/signed.apk ${GVMEXT}/unsigned.apk
 	else
 		log_handler "  ${1} overlay not created."
-		exit_error
+		exitERROR=true && exit 1
 	fi
 	[ "$API" -ge 29 ] && COPYAPK=${STEPDIR}/${DAPK} || COPYAPK=${STEPDIR}
 	mkdir -p ${COPYAPK}
@@ -180,7 +180,7 @@ create_apk() {
 	rm -rf ${GVMEXT}/*.apk
 	if ! [ -s ${COPYAPK}/${FAPK}.apk ]; then
 		log_handler "  ${1} overlay was not copied."
-		exit_error
+		exitERROR=true && exit 1
 	fi
 }
 
@@ -438,7 +438,7 @@ snm_script() {
 	if [ $SNM_MS ]; then
 		if [ $API -gt "29" ]; then
 			var=status
-			val=-1.2
+			val=-1.1
 		else
 			var=notch_status
 			val=-3
@@ -460,7 +460,7 @@ pgm_script() {
 		if [ $PGM_SH_TH ]; then
 			value_check "$cont_PGM_SH_TH" thc
 			if [ $thc ]; then
-				thc2=$(echo "$thc + 6" | bc)
+				thc2=$(echo "$thc + 4" | bc)
 				thc3=$(echo "scale=1;$thc2 * 2 + 6" | bc)
 				case $thc3 in
 					*.*)
@@ -537,6 +537,15 @@ pgm_script() {
 		SVAL1=$DEF1
 		SVAL2=$DEF1
 		SVAL3=$DEF3
+	fi
+	
+	if [ $PGM_RK ]; then
+		if grep 'ro.com.google.ime.kb_pad_port_b' /data/adb/modules/rboard-themes_addon/system.prop /data/adb/modules/gboardnavbar/system.prop; then
+			:
+		else
+			# Originally from RKBDI's nospacing)
+			mv -f /data/adb/modules/$ID/nospacing.prop /data/adb/modules/$ID/system.prop
+		fi
 	fi
 	
 	if [ $MIUI ]; then
@@ -626,6 +635,7 @@ pgm_script() {
 			rm -rf ${STEPDIR}/${DAPK}
 		fi
 	fi
+
 	if [ $PGM_CL_LH ] || [ $PGM_CL_DR ] || [ $PGM_TR ] ; then
 		apk_dir Color
 		INFIX=Color
@@ -634,27 +644,26 @@ pgm_script() {
 		value_check "$cont_PGM_CL_LH" lcl
 		value_check "$cont_PGM_CL_DR" dcl
 		if [ -z $PGM_TR ]; then
-			LTRP=EB
-			DTRP=99
+			ltr=EB
+			dtr=99
 		else
-			LTRP=$PGM_TR
-			DTRP=$PGM_TR
+			value_check "$cont_PGM_TR" tr
+			ltr=$tr
+			dtr=$tr
+		fi
+		if [ -z $lcl ]; then
+			lcl=FFFFFF
+		fi
+		if [ -z $dcl ]; then
+			dcl=000000
 		fi
 		unset var
 		[ -z $MIUI ] && var="bar_home_" || [ $API -ge 30 ] && var="bar_home_"
 		sed -i "s/<var>/$var/" ${VALDIR}/colors.xml
-		if [ $lcl ]; then
-			sed -i "s/<lclr>/$lcl/" ${VALDIR}/colors.xml
-			sed -i "s/<ltrp>/$LTRP/" ${VALDIR}/colors.xml
-		else
-			sed -i "/<lclr>/d" ${VALDIR}/colors.xml
-		fi
-		if [ $dcl ]; then
-			sed -i "s/<dclr>/$dcl/" ${VALDIR}/colors.xml
-			sed -i "s/<dtrp>/$DTRP/" ${VALDIR}/colors.xml
-		else
-			sed -i "/<dclr>/d" ${VALDIR}/colors.xml
-		fi
+		sed -i "s/<lclr>/$lcl/" ${VALDIR}/colors.xml
+		sed -i "s/<ltrp>/$ltr/" ${VALDIR}/colors.xml
+		sed -i "s/<dclr>/$dcl/" ${VALDIR}/colors.xml
+		sed -i "s/<dtrp>/$dtr/" ${VALDIR}/colors.xml
 		create_apk "Pill Color"
 	fi
 }

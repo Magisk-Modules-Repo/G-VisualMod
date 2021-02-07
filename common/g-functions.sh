@@ -417,7 +417,7 @@ invalid_input() {
 }
 
 
-#--------------------------------- NON-USER ENVIRONMENT ---------------------------------#
+#---------------------------------- BACKEND ENVIRONMENT ---------------------------------#
 # Main menu loop
 main_loop() {
 	while true; do
@@ -430,8 +430,8 @@ main_loop() {
 
 # Pre-Install check
 pre_restore() {
-	eval $(cat "$BACKUP") 
-	sleep 2
+	eval $(cat "$BACKUP")
+	sleep 1
 }
 
 # Check selected mod and apply string for content
@@ -556,8 +556,6 @@ mod_reset() {
 	done
 }
 
-
-#---------------------------------- BACKEND ENVIRONMENT ---------------------------------#
 # Mount check
 # (taken from skittles9823's QuickSwitch)
 is_mounted_rw() {
@@ -620,7 +618,7 @@ module_update() {
 	else
 		log_print " - ${R}Error${N}. Update not fetched!"
 	fi 
-	sleep 1.5
+	sleep 1
 }
 
 # Storing selected mods
@@ -676,7 +674,7 @@ exit_error() {
 	echo -e " ${Y}${LOCALLOG}${N}"
 	echo ""
 	log_print " Mod stopped."
-	exit 1
+	exit 0
 }
 
 # FInished installation
@@ -706,4 +704,5 @@ save_logs() {
 	cp -af "$VERLOG" "$LOCALLOG"
 	cd $LOCALLOG
 	zip -Aq ${ID}logs ${ID}.log ${ID}-verbose.log
+	rm -rf ${ID}.log ${ID}-verbose.log
 }

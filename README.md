@@ -1,12 +1,8 @@
 <h1 align="center">G-Visual Mod</h1>
 
 <div align="center">
-  <img src="https://img.shields.io/badge/Version-v4.0-green.svg?longCache=true&style=popout-round"
+  <img src="https://img.shields.io/badge/Version-v4.1-green.svg?longCache=true&style=popout-round"
   alt="Version" />
-</div>
-
-<div align="center">
- <strong>Systemlessy customize your Android's Visual!</strong>
 </div>
 
 ![](https://i.imgur.com/B5XZBfZ.png)
@@ -55,6 +51,7 @@
 ## Credits
 - <a href="https://github.com/Zackptg5">Zackptg5</a> for MMT-Ex template (old template).
 - <a href="https://github.com/veez21">veez21</a> for Terminal Emulator Magisk Module template.
+- <a href="https://github.com/RadekBledowski">RKBDI</a> for nospacing module.
 - <a href="https://github.com/Didgeridoohan">Didgeridoohan</a> for script inspiration.
 - <a href="https://github.com/topjohnwu">topjohnwu</a> for entire Magisk universe.
 - <a href="https://github.com/skittles9823">skittles9823</a> for helping me.
@@ -67,6 +64,13 @@ Also you should check <a href="https://github.com/DanGLES3">DanGLES3</a>'s <a hr
 - <a href="https://forum.xda-developers.com/t/module-g-visual-mod-systemlessy-customize-your-androids-visual.4225571/">Support thread on XDA</a>.
 
 ## Changelog
+### v4.1
+  - Fixed: Pill mods won't install
+  - Added: Several default presets
+  - Adjustment: Reduce bottom keyboard space no longer need additional module
+  - Adjustment: Bottom margin pill
+  - Some backend adjustments
+
 ### v4.0
   - Switch to terminal installation
   - UI Radius now support MIUI
